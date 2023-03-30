@@ -3,7 +3,6 @@ function formatoMoneda(valor) {
   let formatted = new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP" }).format(valor);
 return formatted.replace(/(\.|,)00$/g, "");
 }
-console.log("actualizado")
 
 let tabla1= document.getElementById("tabla1")
 let agregarfila1=document.getElementById("btnAdd1")
@@ -87,7 +86,6 @@ function agregarfila(tabla) {
     swal("","Debe ingresar un producto.","error");
   } else {
   let cantidad=1
-  let total=result.valor*cantidad;
   let accion='insertarProducto';
   let id_cuenta = document.getElementById("idCliente").textContent
   $.ajax({
@@ -103,88 +101,7 @@ function agregarfila(tabla) {
     },
     success: function(response) {
         console.log(response);
-        
-  let tbody = tabla.querySelector('tbody');
-  if (!tbody) {
-    tbody = document.createElement('tbody');
-    tabla.appendChild(tbody);
-  }
-
-    let nuevaFila = document.createElement('tr');
-
-    let inputConcepto = document.createElement('input');
-    inputConcepto.type = 'text';
-    inputConcepto.classList.add('form-control');
-    inputConcepto.setAttribute('disabled',true);
-    inputConcepto.value= select;
-
-    let inputCantidad = document.createElement('input');
-    inputCantidad.type = 'number';
-    inputCantidad.classList.add('form-control','cantidad');
-    inputCantidad.value=cantidad;
-    inputCantidad.setAttribute('oninput', 'handleInputChange(event)');
-    inputCantidad.style.textAlign = 'center';
-
-    let tdConcepto = document.createElement('td');
-    tdConcepto.appendChild(inputConcepto);
-
-    let tdCantidad = document.createElement('td');
-    tdCantidad.style.textAlign = 'center';
-    tdCantidad.appendChild(inputCantidad);
-    
-
-    let tdValor=document.createElement('td');
-    tdValor.style.textAlign= 'center';
-
-    let labelValor = document.createElement('label');
-    labelValor.textContent=result.valor;
-    tdValor.appendChild(labelValor);
-    
-    
-    let tdDescvalor= document.createElement('td');
-    tdDescvalor.style.textAlign='center';
-
-    let labelDescvalor=document.createElement('label');
-    tdDescvalor.appendChild(labelDescvalor);
-
-    let inputDescporc= document.createElement('input')
-    inputDescporc.type= 'number';
-    inputDescporc.min= '10';
-    inputDescporc.max= '100';
-    inputDescporc.step= '10';
-    inputDescporc.classList.add('form-control','porcentaje');
-    inputDescporc.style.textAlign = 'center';
-    
-
-    let tdDescporc=document.createElement('td');
-    tdDescporc.style.textAlign = 'center';
-    tdDescporc.appendChild(inputDescporc);
-
-    let labelTotal=document.createElement('label');
-    labelTotal.textContent=total;
-
-    let tdTotal=document.createElement('td');
-    tdTotal.style.textAlign='center';
-    tdTotal.appendChild(labelTotal)
-
-    let tdOpciones=document.createElement('td');
-    let tdVacio=document.createElement('td');
-  // Agregar más celdas
-  
-  nuevaFila.appendChild(tdConcepto);
-  nuevaFila.appendChild(tdCantidad);
-  nuevaFila.appendChild(tdValor);
-  nuevaFila.appendChild(tdDescvalor);
-  nuevaFila.appendChild(tdDescporc);
-  nuevaFila.appendChild(tdTotal);
-  nuevaFila.appendChild(tdOpciones);
-  nuevaFila.appendChild(tdVacio);
- // tbody.appendChild(nuevaFila)
-
-  // Agregar más celdas según las necesidades de tu tabla
-
-  tabla.appendChild(nuevaFila);
-        
+        pintarProductos();
       },
       error: function(xhr, status, error) {
         console.log("Error al ingresar producto: " + error);
@@ -211,13 +128,41 @@ function buscarProductos() {
   }); //imprime las coincidencias en el datalist
 
 };
-/*
-function handleInputChange(event) {
+
+function handleInputChange(event,cuenta) {
   // Accede al valor actual del input
-  let value = parseInt(event.target.value);
-  
-  console.log(value);
-}*/
+  let key = event.keyCode || event.charCode;
+  if (key === 8 || key === 46 ||event.target.value === '') {
+    event.preventDefault();
+    return false;
+
+  }else{
+  let cantidad = parseInt(event.target.value);
+  accion="cambiarCantidad";
+  $.ajax({
+    type:"POST",
+    url:"conexionCuentas.php",
+    data:{
+        accion:accion,
+        id_registro:cuenta.id_registro,
+        cantidad:cantidad,
+    },
+    success: function(response) {
+        console.log(response);
+        pintarProductos();
+      },
+      error: function(xhr, status, error) {
+        console.log("Error al ingresar producto: " + error);
+      }
+    }
+    )
+
+
+  console.log(value,cuenta);
+    pintarProductos();
+    
+  }
+}
 /*
 function agregar_Mesa(cuenta) {
  
@@ -267,7 +212,6 @@ $(document).ready(function() {
     url: "conexionVentas.php",
     dataType: "json",
     success: function(data) {
-      console.log("trae datos")
       var cuentas = data; // declarar e inicializa la variable productos aquí
       cuentas.forEach(cuenta => {
           if (cuenta.eliminado === "0") {
@@ -283,32 +227,40 @@ $(document).ready(function() {
 });
 
 function detalleCuenta(cuenta) {
-document.getElementById("idCliente").textContent=cuenta.id_cuenta;
-document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+document.getElementById("concepto").disabled=false;//habilita el input para escribir el producto
+document.getElementById("Nombre_cliente").textContent=cuenta.nombre_cliente;//lleva el nombre de la cuenta al detalle
+document.getElementById("idCliente").textContent=cuenta.id_cuenta;//lleva el id de la cuenta para el insert en el detalle
 
-$.ajax({
+pintarProductos();
+
+}
+
+function pintarProductos() {
+document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+$.ajax({//realiza la consulta en la BD para traer los productos con el id de la cuenta
   type: "POST",
   url: "conexionDetalleCuenta.php",
   data: {
-    id_cuenta:cuenta.id_cuenta
+    id_cuenta:document.getElementById("idCliente").textContent
   },
   dataType: "json",
   success: function(data) {
-    console.log("trae datos")
-    
-    var cuentas = data; // declarar e inicializa la variable productos aquí
+    var cuentas = data; // declarar e inicializa la variable donde se almacenarán los productos
+    if(cuentas.length===0){
+      document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML="<tr><td colspan='9' style='text-align:center;'>Agregue un producto</td></tr>";
+    } else{
     cuentas.forEach(cuenta => {
       let total= (cuenta.valor*cuenta.cantidad)-cuenta.descuento_valor;
-        if (cuenta.eliminado === "0") {
-            var row = "<tr><td>" + cuenta.nombre_producto + "</td><td>"+ cuenta.cantidad + "</td><td>" + formatoMoneda(cuenta.valor) +"</td><td>"+ formatoMoneda(cuenta.descuento_valor) +"</td><td>"+ cuenta.descuento_porc + "</td><td>"+ total +"</td></tr>";
+       if (cuenta.eliminado === "0") {
+            var row = "<tr><td>" + cuenta.nombre_producto + "</td><td><input type='number' value='" + cuenta.cantidad + "' class=' form-control form-control--sm cantidad' oninput='handleInputChange(event," + JSON.stringify(cuenta)+")' style='text-align: center;'>" + "</td><td>" + formatoMoneda(cuenta.valor) +"</td><td>"+ formatoMoneda(cuenta.descuento_valor) +"</td><td><input type='number' value='"+cuenta.descuento_porc+"' class='form-control porcentaje' min='10' max='100' step='10' style='text-align: center;'>"+"</td><td>"+ formatoMoneda(total) +"</td>"+"<td></td>"+"<td></td></tr>";
             document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML += row;
           }
-    });
+    })};
   },
   error: function(jqXHR, textStatus, errorThrown) {
     console.log(textStatus, errorThrown);
   }
 });
-
 }
+
 window.onload = onLoad;
