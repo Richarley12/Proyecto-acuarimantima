@@ -1,0 +1,61 @@
+.informacion {
+
+    text-align: center;
+
+}
+.icono {
+    display: inline-block;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+  }
+  
+  .icono i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    font-size: 17px;
+    text-align: center;
+    color: #000;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+  .icono:hover i {
+    background-color: #000;
+    color: #FFF;
+  }
+.resultado{
+    max-height: 30vh;
+    height: 30vh;
+}
+
+.scroll{
+    max-height: 100%; 
+    overflow-y: scroll;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background-color: white;
+  }
+.porcentaje{
+  text-align:center; 
+  font-size: 14px;
+   width: 80%
+}
+.cantidad{
+  text-align:center; 
+  font-size: 14px; 
+  width: 70%
+}
+.concepto {
+  width: 50%; 
+  font-size: 14px;
+  border: none;
+
+}
+.cuentas{
+  width: 100%;
+  height: 100%;
+}
