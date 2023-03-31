@@ -58,9 +58,9 @@
               </th>       
               </tr>
                           <tr>
-                            <th scope="col" class="text-center" style="width:30%">Nombre</th>
-                            <th scope="col" class="text-center" style="width:20%">Total</th>
-                            <th scope="col" class="text-center" style="width:20%">Pendiente</th>
+                            <th scope="col" style="width:30%">Nombre</th>
+                            <!--<th scope="col" class="text-center" style="width:20%">Total</th>
+                            <th scope="col" class="text-center" style="width:20%">Pendiente</th>-->
                             <th scope="col" class="text-center" style="width:20%">Opciones</th>
                           </tr>
                         </thead>
@@ -73,19 +73,23 @@
       <table id="tabla1" class="table table-striped table-hover table-fixed table-sm ">
       <thead>
         <tr>
-          <th colspan="9" id="Nombre_cliente">Seleccione un cliente</th>
+          <th colspan="2" id="Nombre_cliente">Seleccione un cliente</th>
+          <th colspan="1">Total:</th>
+          <th colspan="2"id="Total_cuenta"></th>
+          <th colspan="2">Pendiente:</th>
+          <th colspan="2" id="saldo_Pendiente"></th>
         </tr>
     <tr>
       <th style= "display:none"><label id="idCliente"></label></th>
-      <th scope="col" style="width: 40%">
+      <th scope="col" style="width: 30%">
       <input disabled="true"  placeholder="Concepto" list="sugerencias" type="text" class="form-control concepto" id="concepto" autocomplete="off">
       <datalist id="sugerencias">
       </datalist>
     </th>
       <th scope="col" class="text-center" style="width: 8%">Cantidad</th>
       <th scope="col" class="text-center"style="width: 12%" >ValorxUn</th>
-      <th scope="col" class="text-center"style="width: 10%" >Desc $</th>
-      <th scope="col" class="text-center" style="width: 10%" >Desc %</th>
+      <th scope="col" class="text-center"style="width: 20%" >Descu $</th>
+      <th scope="col" class="text-center" style="width: 10%" >Descue%  </th>
       <th scope="col" class="text-center" style="width: 12%" >Total</th>
       <th scope="col" class="text-center"style="width: 20%">Opciones</th>
       <th scope="col" class="text-center" style="width: 8%"><button class="icono" id="btnAdd1"><i class="fa-sharp fa-regular fa-square-plus tamaño"></i></button></th>

@@ -25,7 +25,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } else { 
                   echo "Error: " . mysqli_error($conn); 
                 }
-    }
+    } else if($accion=='cambiarCantidad'){
+        $id_registro=$_POST['id_registro'];
+        $cantidad=$_POST['cantidad'];
+
+        $sql="UPDATE detalle_cuenta SET cantidad='$cantidad' WHERE id_registro='$id_registro'";
+        if (mysqli_query($conn, $sql)) {   
+                echo "Producto actualizado";
+                } else { 
+                  echo "Error: " . mysqli_error($conn); 
+                }
+      } else if ($accion=='actualizaTotal') {
+        $id_cuenta=$_POST['id_cuenta'];
+        $total=$_POST['total'];
+        $cPagado=$_POST['cPagado'];
+
+        $sql="UPDATE cuenta SET total='$total', saldo_pendiente='$cPagado' WHERE id_cuenta='$id_cuenta'";
+        if (mysqli_query($conn, $sql)) {   
+          echo "Total actualizado";
+          } else { 
+            echo "Error: " . mysqli_error($conn); 
+          }
+      } else if($accion=='cambiarPorcentaje'){
+        $id_registro=$_POST['id_registro'];
+        $cantidad=$_POST['cantidad'];
+        $porcentaje=$_POST['porcentaje'];
+        $descuento_valor=$_POST['descuento_valor'];
+
+        $sql="UPDATE detalle_cuenta SET descuento_porc='$porcentaje', descuento_valor='$descuento_valor' WHERE id_registro='$id_registro'";
+        if (mysqli_query($conn, $sql)) {   
+                echo "Producto actualizado";
+                } else { 
+                  echo "Error: " . mysqli_error($conn); 
+                }
+      } 
 } 
 
 

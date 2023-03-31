@@ -14,13 +14,7 @@ let btnbuscar=document.getElementById("btnbuscar")
 
 
 btnbuscar.addEventListener("click",function () {
-  var select = document.getElementById("idCliente").textContent;
-//let valor=1;
-/*let valor=productos.find(function(producto) {
-return (producto.nombre==select)
-});*/
-
-  console.log("click al boton:" + select)
+ 
 })
 
 concepto.addEventListener("input", function() {
@@ -60,7 +54,7 @@ agregarCuenta.addEventListener("click", function () {
   //agregar_Mesa(Tablacuentas)
 })
 
-// Función de callback que se ejecuta después de que se carga la página
+// Función de callback que se ejecuta después de que se carga la página, me trae todos los productos para agregarlos después a las sugerencias
 function onLoad() {
   // Realizar la petición AJAX para obtener los productos
   $.ajax({
@@ -75,8 +69,8 @@ function onLoad() {
     }
   });
 }
-
-function agregarfila(tabla) {
+//Funcion para agregar una cuenta
+function agregarfila() {
   var select = document.getElementById("concepto").value;
   let result=productos.find(function(producto) {
     return (producto.nombre==select)
@@ -110,7 +104,7 @@ function agregarfila(tabla) {
     )}
   document.getElementById("concepto").value=""
 };
-
+//funcion para el buscador de sugerencias para añadir producto al detalle de cuenta
 function buscarProductos() {
   var select = document.getElementById("sugerencias");
   
@@ -128,17 +122,119 @@ function buscarProductos() {
   }); //imprime las coincidencias en el datalist
 
 };
+//Funcion para pintar todas las mesas activas
+$(document).ready(function() {
+  mesas_Activas()
+});
+//función para enviar el id y llamar a pintar productos
+function detalleCuenta(cuenta) {
+document.getElementById("concepto").disabled=false;//habilita el input para escribir el producto
+document.getElementById("Nombre_cliente").textContent=cuenta.nombre_cliente;//lleva el nombre de la cuenta al detalle
+document.getElementById("idCliente").textContent=cuenta.id_cuenta;//lleva el id de la cuenta para el insert en el detalle
 
-function handleInputChange(event,cuenta) {
-  // Accede al valor actual del input
-  let key = event.keyCode || event.charCode;
-  if (key === 8 || key === 46 ||event.target.value === '') {
-    event.preventDefault();
-    return false;
+pintarProductos();
 
-  }else{
-  let cantidad = parseInt(event.target.value);
-  accion="cambiarCantidad";
+}
+//funcion para traer los productos con el ID de la cuenta seleccionada
+function pintarProductos() {
+document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+$.ajax({//realiza la consulta en la BD para traer los productos con el id de la cuenta
+  type: "POST",
+  url: "conexionDetalleCuenta.php",
+  data: {
+    id_cuenta:document.getElementById("idCliente").textContent
+  },
+  dataType: "json",
+  success: function(data) {
+    var cuentas = data; // declarar e inicializa la variable donde se almacenarán los productos
+    if(cuentas.length===0){
+      document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML="<tr><td colspan='9' style='text-align:center;'>Agregue un producto</td></tr>";
+    } else{
+    let cTotal=0;
+    let cPagado=0;
+    cuentas.forEach(cuenta => {
+      let total= (cuenta.valor*cuenta.cantidad)-cuenta.descuento_valor;
+       if (cuenta.eliminado === "0") {
+            var row = "<tr><td>" + cuenta.nombre_producto + "</td><td style='text-align:center'><button onclick='suma(" + 1 + ", " + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-plus fa-1xs'></i></button>  " + cuenta.cantidad + "   <button onclick='resta(" + 1 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-minus'></i></button></td><td style='text-align:center'>" + formatoMoneda(cuenta.valor) +"</td><td style='text-align:center'>"+ formatoMoneda(cuenta.descuento_valor) +"</td><td style='text-align:center'><button onclick='suma(" + 0 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-plus fa-1xs'></i></button>  " + cuenta.descuento_porc + "   <button onclick='resta(" + 0 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-minus'></i></button></td><td style='text-align:center'>"+ formatoMoneda(total) +"</td>"+"<td></td>"+"<td></td></tr>";
+            document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML += row;
+            cTotal+=total
+            cPagado+=parseInt(cuenta.valor_pagado)
+          }
+          
+    })
+    let cuenta=document.getElementById("idCliente").textContent
+    let saldo_Pendiente=cTotal-cPagado;
+    cuentaTotal(cuenta,cTotal,cPagado);
+    document.getElementById("Total_cuenta").textContent=cTotal;
+    document.getElementById("saldo_Pendiente").textContent=saldo_Pendiente;
+    console.log(cPagado)
+  };
+  },
+  error: function(jqXHR, textStatus, errorThrown) {
+    console.log(textStatus, errorThrown);
+  }
+});
+}
+
+//función para reducir en 1 las cantidades
+function resta(bandera,cuenta) {
+if (bandera===1) {//verifica si reduce la cantidad
+  let cantidad = parseInt(cuenta.cantidad)
+  cantidad=cantidad-1
+  let accion="cambiarCantidad";
+  $.ajax({
+    type:"POST",
+    url:"conexionCuentas.php",
+    data:{
+        accion:accion,
+        id_registro:cuenta.id_registro,
+        cantidad:cantidad,
+    },
+    success: function(response) {
+        console.log(response);
+        pintarProductos();
+      },
+      error: function(xhr, status, error) {
+        console.log("Error al ingresar producto: " + error);
+      }
+    }
+    ) 
+}
+else if (bandera===0) { //verifica si reduce el porcentaje
+  let porcentaje = parseInt(cuenta.descuento_porc)
+  porcentaje=porcentaje-5
+  let accion="cambiarPorcentaje";
+  let descuento_valor=(porcentaje*(cuenta.valor*cuenta.cantidad))/100
+  console.log(descuento_valor)
+  $.ajax({
+    type:"POST",
+    url:"conexionCuentas.php",
+    data:{
+        accion:accion,
+        id_registro:cuenta.id_registro,
+        porcentaje:porcentaje,
+        descuento_valor:descuento_valor
+    },
+    success: function(response) {
+        console.log(response);
+        pintarProductos();
+      },
+      error: function(xhr, status, error) {
+        console.log("Error al ingresar producto: " + error);
+      }
+    }
+    ) 
+}
+}
+//función para aumentar en 1 las cantidades
+function suma(bandera,cuenta) {
+   //verifica si aumenta la cantidad
+  if (bandera===1) {
+    
+  let cantidad = parseInt(cuenta.cantidad)
+  cantidad=cantidad+1
+  let accion="cambiarCantidad";
+  
   $.ajax({
     type:"POST",
     url:"conexionCuentas.php",
@@ -156,57 +252,62 @@ function handleInputChange(event,cuenta) {
       }
     }
     )
-
-
-  console.log(value,cuenta);
-    pintarProductos();
-    
   }
-}
-/*
-function agregar_Mesa(cuenta) {
- 
-  // Obtener el valor del nombre
-  var nombre = document.getElementById("Nombre").value
-
-  // Crear las celdas de la nueva fila
-  let tdNombre = document.createElement("td");
-  tdNombre.textContent = nombre;
-  tdNombre.classList.add("text-center");
-
-  let tdTotal = document.createElement("td");
-  tdTotal.textContent = 2000; // Usar el valor adecuado
-  tdTotal.classList.add("text-center");
-
-  let tdEstado = document.createElement("td");
-  tdEstado.textContent = 1000; // Usar el valor adecuado
-  tdEstado.classList.add("text-center");
-
-  let tdOpciones = document.createElement("td");
-
-  // Crear la nueva fila y agregar las celdas
-  let nuevaFila = document.createElement("tr");
-  nuevaFila.appendChild(tdNombre);
-  nuevaFila.appendChild(tdTotal);
-  nuevaFila.appendChild(tdEstado);
-  nuevaFila.appendChild(tdOpciones);
-
-  // Obtener el tbody de la tabla o crear uno nuevo si no existe
-  let tbody = cuenta.querySelector("tbody");
-  if (!tbody) {
-    tbody = document.createElement("tbody");
-    cuenta.appendChild(tbody);
+   //verifica si aumenta el porcentaje
+  else if (bandera===0) {
+    let porcentaje = parseInt(cuenta.descuento_porc)
+        porcentaje=porcentaje+5
+        let descuento_valor=(porcentaje*(cuenta.valor*cuenta.cantidad))/100
+        console.log(descuento_valor)
+   let accion="cambiarPorcentaje";
+  
+  $.ajax({
+    type:"POST",
+    url:"conexionCuentas.php",
+    data:{
+        accion:accion,
+        id_registro:cuenta.id_registro,
+        porcentaje:porcentaje,
+        descuento_valor:descuento_valor
+    },
+    success: function(response) {
+        console.log(response);
+        pintarProductos();
+      },
+      error: function(xhr, status, error) {
+        console.log("Error al ingresar producto: " + error);
+      }
+    }
+    )
   }
 
-  // Agregar la nueva fila al tbody
-  tbody.appendChild(nuevaFila);
-  document.getElementById("Nombre").value="";
+  }
+
+//funcion para insertar los valores totales en la cuenta
+function cuentaTotal(cuenta,total,cPagado) {
+  accion="actualizaTotal";
+  let tmpCuenta=parseInt(cuenta);
+  $.ajax({//realiza la consulta en la BD para traer los productos con el id de la cuenta
+    type: "POST",
+    url: "conexionCuentas.php",
+    data: {
+      accion:accion,
+      id_cuenta:tmpCuenta,
+      total:total,
+      cPagado:cPagado
+    },
+    success: function(response) {
+      console.log(response);
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(textStatus, errorThrown);
+    }
+  });
+
 }
-*/
-
-//Funcion para pintar todas las mesas activas
-$(document).ready(function() {
-
+//pinta todas las mesas activas
+function mesas_Activas() {
+  document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
   $.ajax({
     type: "GET",
     url: "conexionVentas.php",
@@ -215,7 +316,7 @@ $(document).ready(function() {
       var cuentas = data; // declarar e inicializa la variable productos aquí
       cuentas.forEach(cuenta => {
           if (cuenta.eliminado === "0") {
-              var row = "<tr><td>" + cuenta.nombre_cliente + "</td><td>" + formatoMoneda(cuenta.total) + "</td><td>" + formatoMoneda(cuenta.saldo_pendiente) + "</td><td><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-cash-register'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-trash'></i></button> </td></tr>";
+              var row = "<tr><td>" + cuenta.nombre_cliente + "</td><!--<td>" + formatoMoneda(cuenta.total) + "</td><td>" + formatoMoneda(cuenta.saldo_pendiente) + "</td>--><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-cash-register'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-trash'></i></button> </td></tr>";
               document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML += row;
             }
       });
@@ -224,43 +325,6 @@ $(document).ready(function() {
       console.log(textStatus, errorThrown);
     }
   });
-});
-
-function detalleCuenta(cuenta) {
-document.getElementById("concepto").disabled=false;//habilita el input para escribir el producto
-document.getElementById("Nombre_cliente").textContent=cuenta.nombre_cliente;//lleva el nombre de la cuenta al detalle
-document.getElementById("idCliente").textContent=cuenta.id_cuenta;//lleva el id de la cuenta para el insert en el detalle
-
-pintarProductos();
-
-}
-
-function pintarProductos() {
-document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
-$.ajax({//realiza la consulta en la BD para traer los productos con el id de la cuenta
-  type: "POST",
-  url: "conexionDetalleCuenta.php",
-  data: {
-    id_cuenta:document.getElementById("idCliente").textContent
-  },
-  dataType: "json",
-  success: function(data) {
-    var cuentas = data; // declarar e inicializa la variable donde se almacenarán los productos
-    if(cuentas.length===0){
-      document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML="<tr><td colspan='9' style='text-align:center;'>Agregue un producto</td></tr>";
-    } else{
-    cuentas.forEach(cuenta => {
-      let total= (cuenta.valor*cuenta.cantidad)-cuenta.descuento_valor;
-       if (cuenta.eliminado === "0") {
-            var row = "<tr><td>" + cuenta.nombre_producto + "</td><td><input type='number' value='" + cuenta.cantidad + "' class=' form-control form-control--sm cantidad' oninput='handleInputChange(event," + JSON.stringify(cuenta)+")' style='text-align: center;'>" + "</td><td>" + formatoMoneda(cuenta.valor) +"</td><td>"+ formatoMoneda(cuenta.descuento_valor) +"</td><td><input type='number' value='"+cuenta.descuento_porc+"' class='form-control porcentaje' min='10' max='100' step='10' style='text-align: center;'>"+"</td><td>"+ formatoMoneda(total) +"</td>"+"<td></td>"+"<td></td></tr>";
-            document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML += row;
-          }
-    })};
-  },
-  error: function(jqXHR, textStatus, errorThrown) {
-    console.log(textStatus, errorThrown);
-  }
-});
 }
 
 window.onload = onLoad;
