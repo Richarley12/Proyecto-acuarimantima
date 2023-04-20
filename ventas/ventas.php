@@ -59,8 +59,6 @@
               </tr>
                           <tr>
                             <th scope="col" style="width:30%">Nombre</th>
-                            <!--<th scope="col" class="text-center" style="width:20%">Total</th>
-                            <th scope="col" class="text-center" style="width:20%">Pendiente</th>-->
                             <th scope="col" class="text-center" style="width:20%">Opciones</th>
                           </tr>
                         </thead>
@@ -86,13 +84,13 @@
       <datalist id="sugerencias">
       </datalist>
     </th>
+      <th scope="col" class="text-center"><button class="icono" id="btnAdd1"><i class="fa-sharp fa-regular fa-square-plus tamaño"></i></button></th>
       <th scope="col" class="text-center" style="width: 8%">Cantidad</th>
       <th scope="col" class="text-center"style="width: 12%" >ValorxUn</th>
       <th scope="col" class="text-center"style="width: 20%" >Descu $</th>
       <th scope="col" class="text-center" style="width: 10%" >Descue%  </th>
       <th scope="col" class="text-center" style="width: 12%" >Total</th>
-      <th scope="col" class="text-center"style="width: 20%">Opciones</th>
-      <th scope="col" class="text-center" style="width: 8%"><button class="icono" id="btnAdd1"><i class="fa-sharp fa-regular fa-square-plus tamaño"></i></button></th>
+      <th scope="col" class="text-right"style="width: 20%">Opciones</th>
     </tr> 
   </thead>
   <tbody>
@@ -145,6 +143,141 @@
     </div>
   </div>
   </div>
+<!-- Modal -->
+
+<div class="modal fade modal-lg" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Cuenta</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            <fieldset>
+                            <div class="bg-light border rounded-3 resultado scroll">
+                              <table id="detalleCuenta" class="table table-striped table-hover table-fixed table-sm ">
+                              <thead>
+                        <tr>
+                          <th style= "display:none"><label id="idCliente"></label></th>
+                          <th scope="col" class="text-center" style="width: 20%">Concepto</th>
+                          <th scope="col" class="text-center" style="width: 8%">Cantidad</th>
+                          <th scope="col" class="text-center"style="width: 12%" >ValorxUn</th>
+                          <th scope="col" class="text-center"style="width: 20%" >Descu $</th>
+                          <th scope="col" class="text-center" style="width: 10%" >Descue%  </th>
+                          <th scope="col" class="text-center" style="width: 12%" >Total</th>
+                        </tr> 
+                      </thead>
+                          <tbody>
+                          
+                          </tbody>
+                        </table>
+                              </div>
+                              </fieldset>
+                              <fieldset>
+                      <legend style="font-size:medium; margin-bottom:5px; margin-top:15px;font-weight: bold;">Detalle de pago</legend>
+
+                      <div class="box-body">
+                          <input type="hidden" name="detallesMdp" id="detallesMdp" value="1">
+                          <div class="table-responsive">
+                              <table class="table table-contrains" id="MediosPago">
+                                  <thead>
+                                  <tr>
+                                      <th class="col-md-2">
+                                          <label for="iniciar" class="text-sm">Medio de Pago</label>
+                                      </th>
+
+                                      <th class="col-md-2">
+                                          <label for="iniciar" class="text-sm">Valor</label>
+                                      </th>
+                                  </tr>
+                                  </thead>
+                                  <!-- Fin linea -->
+                                  <tbody id="camposMediosPago" class="mediopago-inicial">
+                                  <tr id="trMediosPago-1">
+                                      <td>
+                                          <select class="form-control tooltip-warning tooltip-remover"
+                                                  style="text-align:left; font-weight:bold; background-color:white;border-radius: 3px;" id="forma_tipo_pago1">
+                                              <option>Seleccione una opción</option>
+                                              <option value="efectivo">Efectivo</option>
+                                              <option value="transferencia">Transferencia</option>
+                                              <option value="morosos">Morosos</option>
+                                          </select>
+                                      </td>
+                                      <td>
+                                          <input type="number" class="form-control input-sm numeric" style="border-radius: 3px" id="valor1" value="0"/>
+                                      </td>
+                                  </tr>
+                                  <tr id="trMediosPago-1">
+                                      <td>
+                                          <select class="form-control tooltip-warning tooltip-remover"
+                                                  style="text-align:left; font-weight:bold; background-color:white;border-radius: 3px;" id="forma_tipo_pago2">
+                                              <option>Seleccione una opción</option>
+                                              <option value="efectivo">Efectivo</option>
+                                              <option value="transferencia">Transferencia</option>
+                                              <option value="morosos">Morosos</option>
+                                          </select>
+                                      </td>
+                                      <td>
+                                          <input type="text" class="form-control input-sm numeric" style="border-radius: 3px" id="valor2" value="0"/>
+                                      </td>
+                                  </tr>
+                                  
+                                  </tbody>
+                              </table>
+                          </div>
+                          <!-- Fin linea -->
+                      </div>
+                      <div id="alert" class="col-xs-12 text-center" style="margin-top:7px;"></div>
+                      <!--Fin de línea-->
+                      </fieldset>
+                      <fieldset class="col-md-12" style="text-align: center;" >
+    <legend style="font-size:medium; margin-bottom:5px; margin-top:15px;font-weight: bold;">Totales</legend>
+    <div class="row" style="justify-content: center;">
+        <div class="col-md-4 col-md-offset-2 col-xs-6" style="margin-bottom:3px; text-align: center; ">
+            <span class="form-control-label" style="vertical-align:-5px;">TOTAL A PAGAR</span>
+        </div>
+        <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
+            <input class="form-control input-sm numeric"style="text-align: right;font-size: 18px;font-weight: bold;border: 0px;border-radius: 2px;" value="0" id="totalCuenta" readonly>
+        </div>
+    </div>
+    <!--Fin de línea-->
+    <div class="row" style="justify-content: center;">
+        <div class="col-md-4 col-md-offset-2 col-xs-6" style="margin-bottom:3px;">
+            <span class="form-control-label" style="vertical-align:-5px;">TOTAL RECAUDO</span>
+        </div>
+        <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
+            <input class="form-control input-sm numeric tooltip-warning tooltip-remover" data-placement="right" title=""
+                   data-trigger="manual" id="totalRecaudo" value="0"
+                   style="text-align:right; font-size:18px; font-weight:bold; border:0px;border-radius: 2px;" readonly />
+        </div>
+    </div>
+    <!--Fin de línea-->
+    <div class="row" style="justify-content: center;">
+        <div class="col-md-4 col-md-offset-2 col-xs-6" style="margin-bottom:3px; text-align: center; ">
+            <span class="form-control-label" style="vertical-align:-5px;">TOTAL A DEVOLVER</span>
+        </div>
+        <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
+            <input class="form-control input-sm numeric"style="text-align: right;font-size: 18px;font-weight: bold;border: 0px;border-radius: 2px;" value="0" id="TotalDev" readonly>
+        </div>
+    </div>
+    <div class="row" style="justify-content: center;">
+        <div class="col-md-4 col-md-offset-2 col-xs-6" style="margin-bottom:3px; text-align: center; ">
+            <span class="form-control-label" style="vertical-align:-5px;">TOTAL PENDIENTE</span>
+        </div>
+        <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
+            <input class="form-control input-sm numeric"style="text-align: right;font-size: 18px;font-weight: bold;border: 0px;border-radius: 2px;" id="totalPendiente" value="0" readonly>
+        </div>
+    </div>
+</fieldset>
+ </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cerrar</button>
+                                    <button type="button" class="btn btn-primary" >Guardar</button>
+                                </div>
+                    </div>
+                </div>
+            </div>
+            
 
 
   <script src="./ventas1.js"></script>
