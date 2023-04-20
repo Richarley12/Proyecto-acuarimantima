@@ -11,6 +11,8 @@ let Tablacuentas=document.getElementById("cuentas")
 let concepto=document.getElementById("concepto")
 let productos = []; // Variable global para almacenar los productos
 let btnbuscar=document.getElementById("btnbuscar")
+let inputRecaudo1=document.getElementById("valor1")
+let inputRecaudo2=document.getElementById("valor2")
 
 
 btnbuscar.addEventListener("click",function () {
@@ -155,7 +157,24 @@ $.ajax({//realiza la consulta en la BD para traer los productos con el id de la 
     cuentas.forEach(cuenta => {
       let total= (cuenta.valor*cuenta.cantidad)-cuenta.descuento_valor;
        if (cuenta.eliminado === "0") {
-            var row = "<tr><td>" + cuenta.nombre_producto + "</td><td style='text-align:center'><button onclick='suma(" + 1 + ", " + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-plus fa-1xs'></i></button>  " + cuenta.cantidad + "   <button onclick='resta(" + 1 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-minus'></i></button></td><td style='text-align:center'>" + formatoMoneda(cuenta.valor) +"</td><td style='text-align:center'>"+ formatoMoneda(cuenta.descuento_valor) +"</td><td style='text-align:center'><button onclick='suma(" + 0 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-plus fa-1xs'></i></button>  " + cuenta.descuento_porc + "   <button onclick='resta(" + 0 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-minus'></i></button></td><td style='text-align:center'>"+ formatoMoneda(total) +"</td>"+"<td></td>"+"<td></td></tr>";
+        var row = "<tr><td>" + cuenta.nombre_producto + "</td>"+"<td></td><td style='text-align:center'>";
+        if (cuenta.pagado === "0") {
+          row += "<button onclick='suma(" + 1 + ", " + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-plus fa-1xs'></i></button>  " + cuenta.cantidad + "   <button onclick='resta(" + 1 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-minus'></i></button>";
+        } else {
+          row += cuenta.cantidad;
+        }
+        row += "</td><td style='text-align:center'>" + formatoMoneda(cuenta.valor) +"</td><td style='text-align:center'>"+ formatoMoneda(cuenta.descuento_valor) +"</td><td style='text-align:center'>";
+        if (cuenta.pagado === "0") {
+          row += "<button onclick='suma(" + 0 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-plus fa-1xs'></i></button>  " + cuenta.descuento_porc + "   <button onclick='resta(" + 0 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-minus'></i></button>";
+        } else {
+          row += cuenta.descuento_porc;
+        }
+        row += "</td><td style='text-align:center'>"+ formatoMoneda(total) +"</td>";
+        if (cuenta.pagado === "0") {
+          row += "<td style='text-align:center'><button type='button' data-bs-toggle='modal' data-bs-target='#staticBackdrop' class='icono'><i class='fa-solid fa-money-bill'></i></button> <button type='button' class='icono'><i class='fa-solid fa-trash'></i></button></td></tr>";
+        } else {
+          row += "<td></td></tr>";
+        }
             document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML += row;
             cTotal+=total
             cPagado+=parseInt(cuenta.valor_pagado)
@@ -165,8 +184,8 @@ $.ajax({//realiza la consulta en la BD para traer los productos con el id de la 
     let cuenta=document.getElementById("idCliente").textContent
     let saldo_Pendiente=cTotal-cPagado;
     cuentaTotal(cuenta,cTotal,cPagado);
-    document.getElementById("Total_cuenta").textContent=cTotal;
-    document.getElementById("saldo_Pendiente").textContent=saldo_Pendiente;
+    document.getElementById("Total_cuenta").textContent=formatoMoneda(cTotal);
+    document.getElementById("saldo_Pendiente").textContent=formatoMoneda(saldo_Pendiente);
     console.log(cPagado)
   };
   },
@@ -315,8 +334,8 @@ function mesas_Activas() {
     success: function(data) {
       var cuentas = data; // declarar e inicializa la variable productos aquí
       cuentas.forEach(cuenta => {
-          if (cuenta.eliminado === "0") {
-              var row = "<tr><td>" + cuenta.nombre_cliente + "</td><!--<td>" + formatoMoneda(cuenta.total) + "</td><td>" + formatoMoneda(cuenta.saldo_pendiente) + "</td>--><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-cash-register'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-trash'></i></button> </td></tr>";
+          if (cuenta.eliminado === "0" && cuenta.estado==="0" ) {
+              var row = "<tr><td>" + cuenta.nombre_cliente + "</td><!--<td>" + formatoMoneda(cuenta.total) + "</td><td>" + formatoMoneda(cuenta.saldo_pendiente) + "</td>--><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal(" + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono'><i class='fa-solid fa-trash'></i></button> </td></tr>";
               document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML += row;
             }
       });
@@ -326,5 +345,46 @@ function mesas_Activas() {
     }
   });
 }
+
+//Fucion para cargar datos del modal de pago
+function modalPagocuentaTotal(cuenta) {
+  var totalPagar=0
+  document.getElementById("detalleCuenta").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+  $.ajax({//realiza la consulta en la BD para traer los productos con el id de la cuenta
+    type: "POST",
+    url: "conexionDetalleCuenta.php",
+    data: {
+      id_cuenta:cuenta.id_cuenta
+    },
+    dataType: "json",
+    success: function(data) {
+      var cuentas = data; // declarar e inicializa la variable donde se almacenarán los productos
+      let cTotal=0;
+      let cPagado=0;
+      let tRecaudo=0
+      let tTransferencia=0
+      let tEfectivo=0
+      cuentas.forEach(cuenta => {
+        let total= (cuenta.valor*cuenta.cantidad)-cuenta.descuento_valor;
+        if (cuenta.eliminado === "0" && cuenta.pagado==="0") {
+             var row = "<tr><td>" + cuenta.nombre_producto + "</td>"+"<td style='text-align:center'>" + cuenta.cantidad + "</td><td style='text-align:center'>" + formatoMoneda(cuenta.valor) +"</td><td style='text-align:center'>"+ formatoMoneda(cuenta.descuento_valor) +"</td><td style='text-align:center'>" + cuenta.descuento_porc + "</td><td style='text-align:center'>"+ formatoMoneda(total) +"</td></tr>";
+             document.getElementById("detalleCuenta").getElementsByTagName('tbody')[0].innerHTML += row;
+             cTotal+=total
+             cPagado+=parseInt(cuenta.valor_pagado)
+           }
+     })
+     document.getElementById("totalCuenta").value=formatoMoneda(cTotal);
+     
+if (document.getElementById("forma_tipo_pago1").value=="Efectivo") {
+  tEfectivo+= document.getElementById("valor1").value
+} else if(document.getElementById("forma_tipo_pago2").value=="Efectivo"){
+  tEfectivo+=document.getElementById("valor2").value
+}
+console.log(tEfectivo)
+    }})
+    
+}
+
+
 
 window.onload = onLoad;

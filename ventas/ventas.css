@@ -84,3 +84,15 @@ input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+.modal-lg {
+  max-width: 90%;
+  width: 90%;
+}
+
+@media (min-width: 768px) {
+  .modal-lg {
+    max-width: 80%;
+    width: 80%;
+  }
+}
