@@ -8,7 +8,6 @@
      <script src="https://kit.fontawesome.com/fa71233e36.js" crossorigin="anonymous"></script>
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
     <title>Acuarimantima</title>
 </head>
 <body>
@@ -154,11 +153,12 @@
                             </div>
                             <div class="modal-body">
                             <fieldset>
-                            <div class="bg-light border rounded-3 resultado scroll">
-                              <table id="detalleCuenta" class="table table-striped table-hover table-fixed table-sm ">
+                            <div class="bg-light border rounded-3 resultado scroll" id="divtabla">
+                              <table id="detalleCuenta" class="table table-striped table-hover table-fixed table-sm " >
                               <thead>
                         <tr>
-                          <th style= "display:none"><label id="idCliente"></label></th>
+                          <th style= "display:; width:2%"></th>
+                          
                           <th scope="col" class="text-center" style="width: 20%">Concepto</th>
                           <th scope="col" class="text-center" style="width: 8%">Cantidad</th>
                           <th scope="col" class="text-center"style="width: 12%" >ValorxUn</th>
@@ -168,14 +168,12 @@
                         </tr> 
                       </thead>
                           <tbody>
-                          
                           </tbody>
                         </table>
                               </div>
                               </fieldset>
                               <fieldset>
                       <legend style="font-size:medium; margin-bottom:5px; margin-top:15px;font-weight: bold;">Detalle de pago</legend>
-
                       <div class="box-body">
                           <input type="hidden" name="detallesMdp" id="detallesMdp" value="1">
                           <div class="table-responsive">
@@ -195,30 +193,18 @@
                                   <tbody id="camposMediosPago" class="mediopago-inicial">
                                   <tr id="trMediosPago-1">
                                       <td>
-                                          <select class="form-control tooltip-warning tooltip-remover"
-                                                  style="text-align:left; font-weight:bold; background-color:white;border-radius: 3px;" id="forma_tipo_pago1">
-                                              <option>Seleccione una opción</option>
-                                              <option value="efectivo">Efectivo</option>
-                                              <option value="transferencia">Transferencia</option>
-                                              <option value="morosos">Morosos</option>
-                                          </select>
+                                      <span class="form-control-label" style="vertical-align:-5px;">Efectivo</span>
                                       </td>
                                       <td>
-                                          <input type="number" class="form-control input-sm numeric" style="border-radius: 3px" id="valor1" value="0"/>
+                                          <input type="number" class="form-control input-sm numeric" style="border-radius: 3px" id="valor1" autocomplete="off"/>
                                       </td>
                                   </tr>
                                   <tr id="trMediosPago-1">
                                       <td>
-                                          <select class="form-control tooltip-warning tooltip-remover"
-                                                  style="text-align:left; font-weight:bold; background-color:white;border-radius: 3px;" id="forma_tipo_pago2">
-                                              <option>Seleccione una opción</option>
-                                              <option value="efectivo">Efectivo</option>
-                                              <option value="transferencia">Transferencia</option>
-                                              <option value="morosos">Morosos</option>
-                                          </select>
+                                      <span class="form-control-label" style="vertical-align:-5px;">Transferencia</span>
                                       </td>
                                       <td>
-                                          <input type="text" class="form-control input-sm numeric" style="border-radius: 3px" id="valor2" value="0"/>
+                                          <input type="text" class="form-control input-sm numeric" style="border-radius: 3px" id="valor2" autocomplete="off" />
                                       </td>
                                   </tr>
                                   
@@ -246,9 +232,7 @@
             <span class="form-control-label" style="vertical-align:-5px;">TOTAL RECAUDO</span>
         </div>
         <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
-            <input class="form-control input-sm numeric tooltip-warning tooltip-remover" data-placement="right" title=""
-                   data-trigger="manual" id="totalRecaudo" value="0"
-                   style="text-align:right; font-size:18px; font-weight:bold; border:0px;border-radius: 2px;" readonly />
+            <input class="form-control input-sm numeric tooltip-warning tooltip-remover" data-placement="right"  data-trigger="manual" id="totalRecaudo" style="text-align:right; font-size:18px; font-weight:bold; border:0px;border-radius: 2px;" value="0" readonly />
         </div>
     </div>
     <!--Fin de línea-->
@@ -272,7 +256,7 @@
  </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cerrar</button>
-                                    <button type="button" class="btn btn-primary" >Guardar</button>
+                                    <button type="button" class="btn btn-primary" onclick=Pago() >Guardar</button>
                                 </div>
                     </div>
                 </div>

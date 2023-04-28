@@ -7,10 +7,8 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.108.0">
     <title>Acuarimantima</title>
-
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
-
-<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -66,7 +64,7 @@
       
     </style>
     <!-- Custom styles for this template -->
-    <link href="./headers.css" rel="stylesheet">
+    <link href="../header/headers.css" rel="stylesheet">
 <body>
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="bootstrap" viewBox="0 0 118 94">
