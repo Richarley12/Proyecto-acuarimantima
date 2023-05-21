@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //valida qué tipo de accion va a realizar
     if ($accion=='insertar') {
         $nombre=$_POST['nombre'];
-        $sql = "INSERT INTO cuenta (nombre_cliente) VALUES ('$nombre')";
+        $sql = "INSERT INTO cuenta (nombre_cliente,fecha) VALUES ('$nombre',NOW())";
         if (mysqli_query($conn, $sql)) {   
             echo "Mesa agregada";
             } else { 
@@ -39,8 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id_cuenta=$_POST['id_cuenta'];
         $total=$_POST['total'];
         $cPagado=$_POST['cPagado'];
+        $spendiente=$_POST['saldo_Pendiente'];
 
-        $sql="UPDATE cuenta SET total='$total', saldo_pendiente='$cPagado' WHERE id_cuenta='$id_cuenta'";
+        $sql="UPDATE cuenta SET total='$total', saldo_Pendiente='$spendiente', saldo_pagado='$cPagado' WHERE id_cuenta='$id_cuenta'";
         if (mysqli_query($conn, $sql)) {   
           echo "Total actualizado";
           } else { 
@@ -48,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           }
       } else if($accion=='cambiarPorcentaje'){
         $id_registro=$_POST['id_registro'];
-        $cantidad=$_POST['cantidad'];
         $porcentaje=$_POST['porcentaje'];
         $descuento_valor=$_POST['descuento_valor'];
 
@@ -58,9 +58,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } else { 
                   echo "Error: " . mysqli_error($conn); 
                 }
-      } 
+      } elseif ($accion=='eliminar'){
+        $id_registro=$_POST['id_registro'];
+        $sql = "UPDATE  detalle_cuenta SET eliminado=1 WHERE id_registro='$id_registro'";
+        if (mysqli_query($conn, $sql)) {   
+          echo "Producto Eliminado";
+          } else { 
+            echo "Error: " . mysqli_error($conn); 
+          }
+      }
 } 
-
 
 // Cerrar la conexión
 $conn->close();

@@ -16,7 +16,7 @@ function formatoMoneda(valor) {
         productos.forEach(producto => {
             if (producto.eliminado === "0") {
                 var row = "<tr><td>" + producto.id_producto + "</td><td>" + producto.nombre + "</td><td>" + formatoMoneda(producto.valor) + 
-                "</td><td> <button data-bs-toggle='modal' onclick='editarProducto(" + JSON.stringify(producto)+")'  data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-pencil'></i></button> <button class='icono' onclick='eliminarProducto(" + producto.id_producto + ")' ><i class='fa-solid fa-trash'></i></button></td></tr>";
+                "</td><td> <button data-bs-toggle='modal' onclick='editarProducto(" + JSON.stringify(producto)+")'  data-bs-target='#staticBackdrop' type='button' class='icono'><i class='fa-solid fa-pencil'></i></button> <button class='icono' onclick='eliminarProducto(" + JSON.stringify(producto) + ")' ><i class='fa-solid fa-trash'></i></button></td></tr>";
                 document.getElementById("tabla").getElementsByTagName('tbody')[0].innerHTML += row;
               }
         });
@@ -28,11 +28,20 @@ function formatoMoneda(valor) {
   });
 
   
-function eliminarProducto(id_producto) {  
-    $.ajax({
+function eliminarProducto(producto) {  
+  swal({
+    title: "¿Estas seguro que quieres eliminar "+producto.nombre+"?",
+    text: "Una vez eliminado, no podrás recuperarlo sin llamar a Richar!",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+      $.ajax({
         type: "POST",
         url: "conexionProductos.php",
-        data: {  accion:"eliminar",id_producto: id_producto },
+        data: { accion:"eliminar",id_producto: producto.id_producto },
         success: function(response) {
           console.log();
          swal({
@@ -46,9 +55,20 @@ function eliminarProducto(id_producto) {
         },
         error: function(xhr, status, error) {
           console.log("Error al eliminar producto: " + error);
+          swal("","falló la eliminación","warning");
         }
       });
-      
+    } else {
+      swal({
+        text:"¡Tu producto está a salvo!",
+        icon: "success",
+        button: false,
+        timer: 1500,
+      }
+       );
+    }
+  });
+   
 }
 function editarProducto(producto) {
     document.getElementById("codigo").value=producto.id_producto;

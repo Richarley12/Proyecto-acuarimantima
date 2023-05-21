@@ -8,7 +8,6 @@
      <script src="https://kit.fontawesome.com/fa71233e36.js" crossorigin="anonymous"></script>
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
     <title>Acuarimantima</title>
 </head>
 <body>
@@ -18,7 +17,7 @@
 <form class="row gx-3 gy-2 align-items-center">
   <div class="col-sm-3">
     <label class="visually-hidden" for="specificSizeInputName">Nombre</label>
-    <input id="Nombre" type="text" class="form-control" placeholder="Nombre">
+    <input id="Nombre" type="text" class="form-control" placeholder="Nombre" autocomplete="off">
   </div>
   <div class="col-sm-3">
     <label class="visually-hidden" for="specificSizeInputName">Teléfono</label>
@@ -44,23 +43,22 @@
       <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
         <div class="bg-light  rounded-3 resultado container scroll" >
              
-                <table id="cuentas" class="table table-striped table-hover table-fixed table-sm">
+                <table id="cuentas" class="table table-striped table-hover table-fixed table-sm table_id">
                 <thead class="sticky-top">
                   <tr>
                     <th colspan="4">
                 <div class="container  input-group">
                 <form class="form-inline  input-group" role="search">
                 <a class="navbar-brand">Mesas activas </a>
-                <input class="form-control me-2" type="search" placeholder="Nombre" aria-label="Search">
-                <button type="button" class="btn btn-dark" id="btnbuscar" >Buscar</button>
+                <input class="form-control me-2 light-table-filter" type="search" placeholder="Nombre" aria-label="Search">
                 </form>
               </div> 
               </th>       
               </tr>
-                          <tr>
-                            <th scope="col" style="width:30%">Nombre</th>
-                            <th scope="col" class="text-center" style="width:20%">Opciones</th>
-                          </tr>
+                            <tr>
+                              <th scope="col" style="width:30%">Nombre</th>
+                              <th scope="col" class="text-center" style="width:20%">Opciones</th>
+                            </tr>
                         </thead>
                         <tbody>
                         
@@ -106,22 +104,36 @@
   <div class=" container ">
     <div class="container pb-3 resultado">
       <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
-        <div class="bg-light border rounded-3">
-          <div class="container">
-            <nav class="navbar bg-body-tertiary">
-              <div class="container  input-group">
-                <form class="form-inline  input-group" role="search">
-                <a class="navbar-brand">Mesas pagadas</a>
-                <input class="form-control me-2" type="search" placeholder="Nombre" aria-label="Search">
-                <button type="button" class="btn btn-dark">Buscar</button>
-                </form>
-              </div>
-            </nav>
-          </div>
-        </div>
+      <div class="bg-light  rounded-3 resultado container scroll" >
+             
+             <table id="cuentasPagadas" class="table table-striped table-hover table-fixed table-sm">
+             <thead class="sticky-top">
+               <tr>
+                 <th colspan="4">
+             <div class="container  input-group">
+             <form class="form-inline  input-group" role="search">
+             <a class="navbar-brand">Mesas pagadas </a>
+             <input class="form-control me-2" type="search" placeholder="Nombre" aria-label="Search">
+             </form>
+           </div> 
+           </th>       
+           </tr>
+                         <tr>
+                           <th scope="col" style="width:30%">Nombre</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                     
+                     </tbody>
+           </table>
+       </div>
       <div class="bg-light border rounded-3 resultado scroll" >
-      <table class="table table-striped table-hover table-fixed table-sm">
+      <table class="table table-striped table-hover table-fixed table-sm" id="tabla2">
       <thead>
+      <tr>
+          <th colspan="3" id="Nombre_clienteP">Seleccione un cliente</th>
+          <th colspan="1">Total:</th>
+          <th colspan="2"id="Total_cuentaP"></th>
     <tr>
       <th scope="col" style="width: 40%">Concepto</th>
       <th scope="col" class="text-center" style="width: 8%">Cantidad</th>
@@ -129,7 +141,6 @@
       <th scope="col" class="text-center"style="width: 10%" >Desc $</th>
       <th scope="col" class="text-center" style="width: 10%" >Desc %</th>
       <th scope="col" class="text-center" style="width: 12%" >Total</th>
-      <th scope="col" class="text-center"style="width: 20%">Opciones</th>
     </tr>
   </thead>
   <tbody>
@@ -154,11 +165,11 @@
                             </div>
                             <div class="modal-body">
                             <fieldset>
-                            <div class="bg-light border rounded-3 resultado scroll">
-                              <table id="detalleCuenta" class="table table-striped table-hover table-fixed table-sm ">
+                            <div class="bg-light border rounded-3 resultado scroll" id="divtabla">
+                              <table id="detalleCuenta" class="table table-striped table-hover table-fixed table-sm " >
                               <thead>
                         <tr>
-                          <th style= "display:none"><label id="idCliente"></label></th>
+                          <th style= "width:2%"><button class="icono"><i class="fa-solid fa-check-double"></i></button></th>
                           <th scope="col" class="text-center" style="width: 20%">Concepto</th>
                           <th scope="col" class="text-center" style="width: 8%">Cantidad</th>
                           <th scope="col" class="text-center"style="width: 12%" >ValorxUn</th>
@@ -168,14 +179,12 @@
                         </tr> 
                       </thead>
                           <tbody>
-                          
                           </tbody>
                         </table>
                               </div>
                               </fieldset>
                               <fieldset>
                       <legend style="font-size:medium; margin-bottom:5px; margin-top:15px;font-weight: bold;">Detalle de pago</legend>
-
                       <div class="box-body">
                           <input type="hidden" name="detallesMdp" id="detallesMdp" value="1">
                           <div class="table-responsive">
@@ -195,30 +204,18 @@
                                   <tbody id="camposMediosPago" class="mediopago-inicial">
                                   <tr id="trMediosPago-1">
                                       <td>
-                                          <select class="form-control tooltip-warning tooltip-remover"
-                                                  style="text-align:left; font-weight:bold; background-color:white;border-radius: 3px;" id="forma_tipo_pago1">
-                                              <option>Seleccione una opción</option>
-                                              <option value="efectivo">Efectivo</option>
-                                              <option value="transferencia">Transferencia</option>
-                                              <option value="morosos">Morosos</option>
-                                          </select>
+                                      <span class="form-control-label" style="vertical-align:-5px;">Efectivo</span>
                                       </td>
                                       <td>
-                                          <input type="number" class="form-control input-sm numeric" style="border-radius: 3px" id="valor1" value="0"/>
+                                          <input type="number" class="form-control input-sm numeric" style="border-radius: 3px" id="valor1" autocomplete="off"/>
                                       </td>
                                   </tr>
                                   <tr id="trMediosPago-1">
                                       <td>
-                                          <select class="form-control tooltip-warning tooltip-remover"
-                                                  style="text-align:left; font-weight:bold; background-color:white;border-radius: 3px;" id="forma_tipo_pago2">
-                                              <option>Seleccione una opción</option>
-                                              <option value="efectivo">Efectivo</option>
-                                              <option value="transferencia">Transferencia</option>
-                                              <option value="morosos">Morosos</option>
-                                          </select>
+                                      <span class="form-control-label" style="vertical-align:-5px;">Transferencia</span>
                                       </td>
                                       <td>
-                                          <input type="text" class="form-control input-sm numeric" style="border-radius: 3px" id="valor2" value="0"/>
+                                          <input type="text" class="form-control input-sm numeric" style="border-radius: 3px" id="valor2" autocomplete="off" />
                                       </td>
                                   </tr>
                                   
@@ -246,9 +243,7 @@
             <span class="form-control-label" style="vertical-align:-5px;">TOTAL RECAUDO</span>
         </div>
         <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
-            <input class="form-control input-sm numeric tooltip-warning tooltip-remover" data-placement="right" title=""
-                   data-trigger="manual" id="totalRecaudo" value="0"
-                   style="text-align:right; font-size:18px; font-weight:bold; border:0px;border-radius: 2px;" readonly />
+            <input class="form-control input-sm numeric tooltip-warning tooltip-remover" data-placement="right"  data-trigger="manual" id="totalRecaudo" style="text-align:right; font-size:18px; font-weight:bold; border:0px;border-radius: 2px;" value="0" readonly />
         </div>
     </div>
     <!--Fin de línea-->
@@ -272,7 +267,7 @@
  </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cerrar</button>
-                                    <button type="button" class="btn btn-primary" >Guardar</button>
+                                    <button type="button" class="btn btn-primary" onclick=Pago() >PAGAR</button>
                                 </div>
                     </div>
                 </div>
@@ -281,6 +276,6 @@
 
 
   <script src="./ventas1.js"></script>
-
+  <script src="../productos/buscador.js"></script>
 </body>
 </html>

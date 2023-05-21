@@ -7,10 +7,8 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.108.0">
     <title>Acuarimantima</title>
-
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
-
-<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -66,7 +64,7 @@
       
     </style>
     <!-- Custom styles for this template -->
-    <link href="./headers.css" rel="stylesheet">
+    <link href="../header/headers.css" rel="stylesheet">
 <body>
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="bootstrap" viewBox="0 0 118 94">
@@ -100,7 +98,7 @@
               <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
             </a>
             <ul class="dropdown-menu text-small shadow">
-              <li><a class="dropdown-item active" href="#" aria-current="page">Turnos</a></li>
+              <li><a class="dropdown-item active" href="../Turnos/turnos.php" aria-current="page">Turnos</a></li>
               <li><a class="dropdown-item" href="../productos/productos.php">Productos</a></li>
               <li><a class="dropdown-item" href="../ventas/ventas.php">Ventas</a></li>
               <li><a class="dropdown-item" href="#">Egresos</a></li>
