@@ -60,7 +60,7 @@ function eliminarProducto(producto) {
       });
     } else {
       swal({
-        text:"¡Tu archivo está a salvo!",
+        text:"¡Tu producto está a salvo!",
         icon: "success",
         button: false,
         timer: 1500,

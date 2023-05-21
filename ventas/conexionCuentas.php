@@ -58,8 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } else { 
                   echo "Error: " . mysqli_error($conn); 
                 }
-      } elseif ($accion=='pagoDetalle'){
-        
+      } elseif ($accion=='eliminar'){
+        $id_registro=$_POST['id_registro'];
+        $sql = "UPDATE  detalle_cuenta SET eliminado=1 WHERE id_registro='$id_registro'";
+        if (mysqli_query($conn, $sql)) {   
+          echo "Producto Eliminado";
+          } else { 
+            echo "Error: " . mysqli_error($conn); 
+          }
       }
 } 
 

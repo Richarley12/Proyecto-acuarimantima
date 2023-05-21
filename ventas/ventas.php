@@ -17,7 +17,7 @@
 <form class="row gx-3 gy-2 align-items-center">
   <div class="col-sm-3">
     <label class="visually-hidden" for="specificSizeInputName">Nombre</label>
-    <input id="Nombre" type="text" class="form-control" placeholder="Nombre">
+    <input id="Nombre" type="text" class="form-control" placeholder="Nombre" autocomplete="off">
   </div>
   <div class="col-sm-3">
     <label class="visually-hidden" for="specificSizeInputName">Teléfono</label>
@@ -43,23 +43,22 @@
       <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
         <div class="bg-light  rounded-3 resultado container scroll" >
              
-                <table id="cuentas" class="table table-striped table-hover table-fixed table-sm">
+                <table id="cuentas" class="table table-striped table-hover table-fixed table-sm table_id">
                 <thead class="sticky-top">
                   <tr>
                     <th colspan="4">
                 <div class="container  input-group">
                 <form class="form-inline  input-group" role="search">
                 <a class="navbar-brand">Mesas activas </a>
-                <input class="form-control me-2" type="search" placeholder="Nombre" aria-label="Search">
-                <button type="button" class="btn btn-dark" id="btnbuscar" >Buscar</button>
+                <input class="form-control me-2 light-table-filter" type="search" placeholder="Nombre" aria-label="Search">
                 </form>
               </div> 
               </th>       
               </tr>
-                          <tr>
-                            <th scope="col" style="width:30%">Nombre</th>
-                            <th scope="col" class="text-center" style="width:20%">Opciones</th>
-                          </tr>
+                            <tr>
+                              <th scope="col" style="width:30%">Nombre</th>
+                              <th scope="col" class="text-center" style="width:20%">Opciones</th>
+                            </tr>
                         </thead>
                         <tbody>
                         
@@ -105,22 +104,36 @@
   <div class=" container ">
     <div class="container pb-3 resultado">
       <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
-        <div class="bg-light border rounded-3">
-          <div class="container">
-            <nav class="navbar bg-body-tertiary">
-              <div class="container  input-group">
-                <form class="form-inline  input-group" role="search">
-                <a class="navbar-brand">Mesas pagadas</a>
-                <input class="form-control me-2" type="search" placeholder="Nombre" aria-label="Search">
-                <button type="button" class="btn btn-dark">Buscar</button>
-                </form>
-              </div>
-            </nav>
-          </div>
-        </div>
+      <div class="bg-light  rounded-3 resultado container scroll" >
+             
+             <table id="cuentasPagadas" class="table table-striped table-hover table-fixed table-sm">
+             <thead class="sticky-top">
+               <tr>
+                 <th colspan="4">
+             <div class="container  input-group">
+             <form class="form-inline  input-group" role="search">
+             <a class="navbar-brand">Mesas pagadas </a>
+             <input class="form-control me-2" type="search" placeholder="Nombre" aria-label="Search">
+             </form>
+           </div> 
+           </th>       
+           </tr>
+                         <tr>
+                           <th scope="col" style="width:30%">Nombre</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                     
+                     </tbody>
+           </table>
+       </div>
       <div class="bg-light border rounded-3 resultado scroll" >
-      <table class="table table-striped table-hover table-fixed table-sm">
+      <table class="table table-striped table-hover table-fixed table-sm" id="tabla2">
       <thead>
+      <tr>
+          <th colspan="3" id="Nombre_clienteP">Seleccione un cliente</th>
+          <th colspan="1">Total:</th>
+          <th colspan="2"id="Total_cuentaP"></th>
     <tr>
       <th scope="col" style="width: 40%">Concepto</th>
       <th scope="col" class="text-center" style="width: 8%">Cantidad</th>
@@ -128,7 +141,6 @@
       <th scope="col" class="text-center"style="width: 10%" >Desc $</th>
       <th scope="col" class="text-center" style="width: 10%" >Desc %</th>
       <th scope="col" class="text-center" style="width: 12%" >Total</th>
-      <th scope="col" class="text-center"style="width: 20%">Opciones</th>
     </tr>
   </thead>
   <tbody>
@@ -157,8 +169,7 @@
                               <table id="detalleCuenta" class="table table-striped table-hover table-fixed table-sm " >
                               <thead>
                         <tr>
-                          <th style= "display:; width:2%"></th>
-                          
+                          <th style= "width:2%"><button class="icono"><i class="fa-solid fa-check-double"></i></button></th>
                           <th scope="col" class="text-center" style="width: 20%">Concepto</th>
                           <th scope="col" class="text-center" style="width: 8%">Cantidad</th>
                           <th scope="col" class="text-center"style="width: 12%" >ValorxUn</th>
@@ -256,7 +267,7 @@
  </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cerrar</button>
-                                    <button type="button" class="btn btn-primary" onclick=Pago() >Guardar</button>
+                                    <button type="button" class="btn btn-primary" onclick=Pago() >PAGAR</button>
                                 </div>
                     </div>
                 </div>
@@ -265,6 +276,6 @@
 
 
   <script src="./ventas1.js"></script>
-
+  <script src="../productos/buscador.js"></script>
 </body>
 </html>
