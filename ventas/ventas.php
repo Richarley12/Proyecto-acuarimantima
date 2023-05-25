@@ -156,7 +156,7 @@
   </div>
 <!-- Modal -->
 
-<div class="modal fade modal-lg" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade modal-xl" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                             <div class="modal-header">
@@ -182,7 +182,6 @@
                           </tbody>
                         </table>
                               </div>
-                              </fieldset>
                               <fieldset>
                       <legend style="font-size:medium; margin-bottom:5px; margin-top:15px;font-weight: bold;">Detalle de pago</legend>
                       <div class="box-body">
@@ -207,7 +206,7 @@
                                       <span class="form-control-label" style="vertical-align:-5px;">Efectivo</span>
                                       </td>
                                       <td>
-                                          <input type="number" class="form-control input-sm numeric" style="border-radius: 3px" id="valor1" autocomplete="off"/>
+                                          <input type="number" class="form-control input-sm numeric" style="border-radius: 3px; direction: rtl; caret-color: transparent" id="valor1" autocomplete="off"/>
                                       </td>
                                   </tr>
                                   <tr id="trMediosPago-1">
@@ -215,7 +214,7 @@
                                       <span class="form-control-label" style="vertical-align:-5px;">Transferencia</span>
                                       </td>
                                       <td>
-                                          <input type="text" class="form-control input-sm numeric" style="border-radius: 3px" id="valor2" autocomplete="off" />
+                                          <input type="text" class="form-control input-sm numeric" style="border-radius: 3px; direction: rtl; caret-color: transparent" id="valor2" autocomplete="off" />
                                       </td>
                                   </tr>
                                   

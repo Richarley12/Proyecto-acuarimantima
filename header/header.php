@@ -98,7 +98,7 @@
               <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
             </a>
             <ul class="dropdown-menu text-small shadow">
-              <li><a class="dropdown-item active" href="../Turnos/turnos.php" aria-current="page">Turnos</a></li>
+              <li><a class="dropdown-item" href="../Turnos/turnos.php">Turnos</a></li>
               <li><a class="dropdown-item" href="../productos/productos.php">Productos</a></li>
               <li><a class="dropdown-item" href="../ventas/ventas.php">Ventas</a></li>
               <li><a class="dropdown-item" href="#">Egresos</a></li>
