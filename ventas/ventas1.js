@@ -16,6 +16,22 @@ let inputRecaudo1=document.getElementById("valor1")
 let inputRecaudo2=document.getElementById("valor2")
 var resultado=[]
 
+function traer_turnos() {
+  return new Promise(function(resolve, reject) {
+    $.ajax({
+      type:"POST",
+      url:"../Turnos/traerturnos.php",
+      data:{
+        accion:'traerturnos'
+      },
+      datatype:"json",
+      success: function(data){
+        resolve(data);
+      }, error: function(xhr, status, error) {
+        reject(error);
+      }
+})})}
+
 concepto.addEventListener("input", function() {
   buscarProductos();
 });
@@ -28,28 +44,40 @@ agregarCuenta.addEventListener("click", function () {
   
   let accion='insertar'
   let nombre = document.getElementById("Nombre").value
-  console.log(nombre)
-
-  if (nombre==="") {
-    swal("","Debe ingresar un nombre.","error");
-  } else {
-  $.ajax({
-    type:"POST",
-    url:"conexionCuentas.php",
-    data:{
-        accion:accion,
-        nombre:nombre,
-    },
-    success: function(response) {
-        console.log(response);
-        window.location.reload();
-        
-      },
-      error: function(xhr, status, error) {
-        console.log("Error al eliminar producto: " + error);
-      }
+  traer_turnos()
+  .then((data)=>{
+    if (data.length>1) {
+      ultimo_turno= data[data.length - 1]
+    }else {
+      ultimo_turno= data[0]
     }
-    )}
+   if (data.length===0 ||ultimo_turno.fecha_fin!==null) {
+    swal("","Debe abrir un turno.","error");
+   } else{
+    if (nombre==="") {
+      swal("","Debe ingresar un nombre.","error");
+    } else {
+    $.ajax({
+      type:"POST",
+      url:"conexionCuentas.php",
+      data:{
+          accion:accion,
+          nombre:nombre,
+          id_turno:ultimo_turno.id_turno,
+          encargado:ultimo_turno.encargado
+      },
+      success: function(response) {
+          console.log(response);
+          window.location.reload();
+          
+        },
+        error: function(xhr, status, error) {
+          console.log("Error al eliminar producto: " + error);
+        }
+      }
+      )}}
+  })
+  
   //agregar_Mesa(Tablacuentas)
 })
 
@@ -109,7 +137,6 @@ function buscarProductos() {
   
   select.innerHTML = ""; // Limpia la lista de sugerencias
 
-
   var filtro = productos.filter(function(producto) {
     return producto.nombre.toLowerCase().includes(concepto.value.toLowerCase());
   }); //solo muestra las coincidencias una vez
@@ -143,7 +170,6 @@ function pintarProductos() {
   let id=document.getElementById("idCliente").textContent
   traerProductos(id)
   .then((cuentas) =>{
-    console.log(cuentas)
       if(cuentas.length===0){
         document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML="<tr><td colspan='9' style='text-align:center;'>Agregue un producto</td></tr>";
       } else{    
@@ -325,24 +351,37 @@ function cuentaTotal(cuenta,cTotal,cPagado,saldo_Pendiente) {
 }
 //pinta todas las mesas activas
 function mesas_Activas() {
-  document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
-  $.ajax({
-    type: "GET",
-    url: "conexionVentas.php",
-    dataType: "json",
-    success: function(data) {
-      var cuentas = data; // declarar e inicializa la variable productos aquí
-      cuentas.forEach(cuenta => {
-          if (cuenta.eliminado === "0" && cuenta.estado==="0" ) {
-              var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono'><i class='fa-solid fa-trash'></i></button> </td></tr>";
-              document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML += row;
-            }
-      });
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(textStatus, errorThrown);
+  traer_turnos()
+  .then((data)=>{
+    if (data.length>1) {
+      ultimo_turno= data[data.length - 1]
+    }else {
+      ultimo_turno= data[0]
     }
-  });
+    if (data.length===0 ||ultimo_turno.fecha_fin!==null){
+      document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML = "";
+    } else {
+      document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+      $.ajax({
+        type: "GET",
+        url: "conexionVentas.php",
+        dataType: "json",
+        success: function(data) {
+          var cuentas = data; // declarar e inicializa la variable productos aquí
+          cuentas.forEach(cuenta => {
+              if (cuenta.eliminado === "0" && cuenta.estado==="0" && cuenta.id_turno===ultimo_turno.id_turno) {
+                  var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono'><i class='fa-solid fa-trash'></i></button> </td></tr>";
+                  document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML += row;
+                }
+          });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+        }
+      });
+    }
+
+ })
 }
 
 //Fucion para cargar datos del modal de pago
@@ -609,26 +648,36 @@ async function pagoDetalleCuenta(resultado) {
 }
 }
 function mesas_Pagadas() {
-  document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
-  $.ajax({
-    type: "GET",
-    url: "conexionVentas.php",
-    dataType: "json",
-    success: function(data) {
-      var cuentas = data; // declarar e inicializa la variable productos aquí
-      cuentas.forEach(cuenta => {
-          if (cuenta.eliminado === "0" && cuenta.estado==="1" ) {
-              var row = "<tr><td onclick='pintarProductosPagados(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td></tr>";
-              document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML += row;
-            }
-      });
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(textStatus, errorThrown);
+  traer_turnos()
+  .then((data)=>{
+    if (data.length>1) {
+      ultimo_turno= data[data.length - 1]
+    }else {
+      ultimo_turno= data[0]
     }
-  });
-
-
+    if (data.length===0 ||ultimo_turno.fecha_fin!==null){
+      document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = ""
+    } else{
+      document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+      $.ajax({
+        type: "GET",
+        url: "conexionVentas.php",
+        dataType: "json",
+        success: function(data) {
+          var cuentas = data; // declarar e inicializa la variable productos aquí
+          cuentas.forEach(cuenta => {
+              if (cuenta.eliminado === "0" && cuenta.estado==="1"&& cuenta.id_turno===ultimo_turno.id_turno ) {
+                  var row = "<tr><td onclick='pintarProductosPagados(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td></tr>";
+                  document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML += row;
+                }
+          });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+        }
+      });
+    }
+})
 }
 
 function pintarProductosPagados(cuenta) {

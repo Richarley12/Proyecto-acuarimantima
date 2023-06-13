@@ -31,7 +31,7 @@
       <!-- <div class="col-md-5 col-lg-4 order-md-last"> -->
         <h4 class="d-flex justify-content-between align-items-center mb-3">
           <span class="text-primary">Abre tu turno</span>
-          <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill"  data-bs-toggle="modal" data-bs-target="#staticBackdrop" type="button" id="boton_modal" >
+          <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill"  data-bs-toggle="modal" data-bs-target="#staticBackdrop" type="button" id="boton_modal"  onclick=abrir_cerrar() >
       </button>
         </h4>
         <ul class="list-group mb-3">
@@ -101,12 +101,7 @@
   </main>
 
   <footer class="my-5 pt-5 text-body-secondary text-center text-small">
-    <p class="mb-1">&copy; 2017–2023 Company Name</p>
-    <ul class="list-inline">
-      <li class="list-inline-item"><a href="#">Privacy</a></li>
-      <li class="list-inline-item"><a href="#">Terms</a></li>
-      <li class="list-inline-item"><a href="#">Support</a></li>
-    </ul>
+    <p class="mb-1">&copy; 2023 Acuarimántima Cafe-Bar</p>
   </footer>
 </div>
 
@@ -115,20 +110,11 @@
 <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="titulo">Apertura de turno</h1>
+        <h1 class="modal-title fs-5" id="titulo"></h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="apertura" style="display:none">
-        <div class="row">
-              <div class="col">
-              <label for="recipient-name" class="col-form-label">Encargado:</label>
-              </div>
-              <div class="col">
-              <label id="encargado" for="recipient-name" class="col-form-label">Pepito perez</label>
-              </div>
-            </div>
-
         <div class="row">
               <div class="col">
               <label for="recipient-name" class="col-form-label">Efectivo en caja:</label>
@@ -145,10 +131,10 @@
         <form id="cierre" style="display:none">
         <div class="row">
               <div class="col">
-              <label for="recipient-name" class="col-form-label">Efectivo previsto:</label>
+              <label for="recipient-name" class="col-form-label" >Efectivo previsto:</label>
               </div>
               <div class="col"  style="text-align:right">
-              <span class="text-body-secondary" >$0</span>
+              <span class="text-body-secondary" id="efectivo_previsto">$0</span>
               </div>
             </div>
             <span class="text-body-secondary"></span>
@@ -157,37 +143,53 @@
               <label for="recipient-name" class="col-form-label">Efectivo en caja:</label>
               </div>
               <div class="col">
-                <input type="number" class="form-control input-sm numeric" style="direction: rtl; caret-color: transparent" placeholder="" aria-label="">
+                <input type="number" class="form-control input-sm numeric" style="direction: rtl; caret-color: transparent" id="previsto">
               </div>
             </div>
             <div class="mb-3">
             <label for="message-text" class="col-form-label">Observaciones:</label>
-            <textarea class="form-control" id="message-text"></textarea>
+            <textarea class="form-control" id="observaciones_cierre"></textarea>
           </div>
         </form>
         <form id="resumen_turno" style="display:">
         <div class="row">
               <div class="col">
-              <label for="recipient-name" class="col-form-label">Encargado:</label>
+              <label for="recipient-name" class="col-form-label" >Encargado:</label>
               </div>
               <div class="col"  style="text-align:right">
-              <span class="text-body-secondary" ></span>
+              <span class="text-body-secondary" id="t_Encargado" ></span>
               </div>
             </div>
             <div class="row">
               <div class="col">
-              <label for="recipient-name" class="col-form-label">Efectivo total:</label>
+              <label for="recipient-name" class="col-form-label">Efectivo inicial:</label>
               </div>
               <div class="col"  style="text-align:right">
-              <span class="text-body-secondary" >$0</span>
+              <span class="text-body-secondary" id="efectivo_inicial" ></span>
               </div>
             </div>
             <div class="row">
               <div class="col">
-              <label for="recipient-name" class="col-form-label">Transferencia total:</label>
+              <label for="recipient-name" class="col-form-label" >Efectivo ventas:</label>
               </div>
               <div class="col"  style="text-align:right">
-              <span class="text-body-secondary" >$0</span>
+              <span class="text-body-secondary" id="t_Efectivoventas" ></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+              <label for="recipient-name" class="col-form-label" >Efectivo cierre:</label>
+              </div>
+              <div class="col"  style="text-align:right">
+              <span class="text-body-secondary" id="t_Efectivocierre" ></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+              <label for="recipient-name" class="col-form-label">Transferencia ventas:</label>
+              </div>
+              <div class="col"  style="text-align:right">
+              <span class="text-body-secondary" id="t_transferenciaventas" ></span>
               </div>
             </div>
             <div class="row">
@@ -195,7 +197,7 @@
               <label for="recipient-name" class="col-form-label">fecha inicio:</label>
               </div>
               <div class="col"  style="text-align:right">
-              <span class="text-body-secondary" >$0</span>
+              <span class="text-body-secondary" id="f_inicio"></span>
               </div>
             </div>
             <div class="row">
@@ -203,24 +205,24 @@
               <label for="recipient-name" class="col-form-label">Fecha fin:</label>
               </div>
               <div class="col"  style="text-align:right">
-              <span class="text-body-secondary" >$0</span>
+              <span class="text-body-secondary" id="f_fin"></span>
               </div>
             </div>
-            <div class="row">
-              <div class="col">
-              <label for="recipient-name" class="col-form-label">Efectivo al cierre:</label>
-              </div>
-              <div class="col"  style="text-align:right">
-              <span class="text-body-secondary" >$0</span>
-              </div>
-            </div>
+            <div class="mb-3">
+            <label for="message-text" class="col-form-label">Observaciones apertura:</label>
+            <textarea readonly="readonly" class="form-control" id="tobs_apertura"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Observaciones cierre:</label>
+            <textarea readonly="readonly" class="form-control" id="tobs_cierre"></textarea>
+          </div>
       </form>
       </div>
      
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" onclick="abrir_turno()">Abrir</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cerrar</button>
+        <button type="button" class="btn btn-primary" id="guardar" onclick="ejecutar_turno()">Guardar</button>
       </div>
     </div>
   </div>

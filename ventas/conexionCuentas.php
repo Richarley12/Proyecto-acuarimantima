@@ -7,8 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //valida qué tipo de accion va a realizar
     if ($accion=='insertar') {
         $nombre=$_POST['nombre'];
-        $sql = "INSERT INTO cuenta (nombre_cliente,fecha) VALUES ('$nombre',NOW())";
-        if (mysqli_query($conn, $sql)) {   
+        $id_turno=$_POST['id_turno'];
+        $encargado=$_POST['encargado'];
+        $sql = "INSERT INTO cuenta (nombre_cliente,responsable,id_turno,fecha) VALUES ('$nombre','$encargado','$id_turno',NOW())";
+        if (mysqli_query($conn, $sql)) {
             echo "Mesa agregada";
             } else { 
               echo "Error: " . mysqli_error($conn); 

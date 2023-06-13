@@ -10,14 +10,32 @@ if ($accion == 'abrirturno') {
     $saldo_inicial=$_POST['saldo_inicial'];
     $observacion_apertura=$_POST['observacion_apertura'];
 
-    $sql = "INSERT INTO turno (encargado,saldo_inicial,observacion_apertura,fecha_inicio) VALUES ('$encargado','$saldo_inicial','$observacion_apertura',NOW())";
+    $sql = "INSERT INTO turno (encargado, saldo_inicial, observacion_apertura, fecha_inicio)
+    SELECT nombre, '$saldo_inicial', '$observacion_apertura', NOW()
+    FROM usuarios
+    WHERE id_usuario = '$encargado'";
 
     if (mysqli_query($conn, $sql)) {   
       echo "Turno abierto correctamente";
       } else { 
         echo "Error al actualizar registro: " . mysqli_error($conn); 
       }
-  } 
+  } else if($accion == 'cerrarturno'){
+          $ventas_efectivo=$_POST['ventas_efectivo'];
+          $ventas_transferencia=$_POST['ventas_transferencia'];
+          $total=$_POST['total'];
+          $efectivo_cierre=$_POST['efectivo_cierre'];
+          // $egresos_efectivo=$_POST['egresos_efectivo'];
+          // $egresos_transferencia=$_POST['egresos_transferencia'];
+          $observacion_cierre=$_POST['observacion_cierre'];
+          $id_turno=$_POST['id_turno'];
+          $sql = "UPDATE turno SET pagos_efectivo='$ventas_efectivo', pago_transferencia='$ventas_transferencia', efectivo_cierre=' $efectivo_cierre',observacion_cierre='$observacion_cierre',fecha_fin=NOW() WHERE id_turno='$id_turno'";
+          if (mysqli_query($conn, $sql)) {   
+            echo "Turno cerrado";
+            } else { 
+              echo "Error: " . mysqli_error($conn); 
+            }
+  }
 }
 // Cerrar la conexión
 $conn->close();

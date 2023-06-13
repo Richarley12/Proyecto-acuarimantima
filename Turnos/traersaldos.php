@@ -7,7 +7,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sql = "SELECT pago_efectivo,pago_transferencia,devuelta FROM pagos WHERE fecha >= '$fecha_inicio'";
     $resultado = $conn->query($sql);
     $datos=array();
-
     if ($resultado->num_rows > 0) {
       while ($row = $resultado->fetch_assoc()) {
           $datos[] = $row;}

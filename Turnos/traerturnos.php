@@ -15,11 +15,9 @@ if ($resultado->num_rows > 0) {
 // Cerrar la conexión
 $conn->close();
 // Convertir el array de datos a JSON
-if (empty($turnos)) {
-    echo 'null';
-  } else {
+
     echo json_encode($turnos);
-  }
+  
 
 
 ?>
