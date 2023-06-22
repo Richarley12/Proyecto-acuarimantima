@@ -1,7 +1,7 @@
 CREATE TABLE `clientes` (
   `id_cliente` INT(10) UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `nombre_cliente` varchar(30),
-  `telefono` INT(12),
+  `telefono`  varchar(30),
   `eliminado` TINYINT DEFAULT 0
 );
 

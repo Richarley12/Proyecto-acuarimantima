@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <script src="https://kit.fontawesome.com/fa71233e36.js" crossorigin="anonymous"></script>
-    <title>Acuarimantima</title>
+    <title>Productos Acuarimantima café-bar</title>
     <link href="../header/headers.css" rel="stylesheet">
     <link href="../ventas/ventas.css" rel="stylesheet"> 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -17,17 +17,17 @@
 
 
 <?php include '../header/header.php'?>    
-<div class="container"> 
-    <div class="row gx-3 gy-2 align-items-center justify-content-between">
+<div class="container">
+    <div class="row align-items-center">
         <div class="col-sm-4">
             <h1>Productos</h1>
         </div>
-       <div class="col-auto ">
-       <input class="form-control me-2 light-table-filter" type="text" placeholder="Nombre" aria-label="Search" data-table="table_id" id="input-buscador" >
-       </div>
-        <div class="col-auto ">
-        <button type="button" class="btn btn-secondary ml-auto" data-bs-toggle='modal' data-bs-target='#staticBackdrop' >AGREGAR PRODUCTO</button>
-    </div>
+        <div class="col">
+            <div class="input-group">
+                <input class="form-control me-2 light-table-filter" type="text" placeholder="Nombre" aria-label="Search" data-table="table_id" id="input-buscador">
+                <button type="button" class="btn btn-secondary" data-bs-toggle='modal' data-bs-target='#staticBackdrop'>AGREGAR PRODUCTO</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -80,6 +80,9 @@
             
 
 </body>
+<footer class="my-5 pt-5 text-body-secondary text-center text-small">
+    <p class="mb-1">&copy; 2023 Acuarimántima Cafe-Bar</p>
+  </footer>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 <script src="../productos/pintarProductos.js"></script>
 <script src="../productos/buscador.js"></script>

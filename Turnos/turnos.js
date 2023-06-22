@@ -14,7 +14,6 @@ function formatoMoneda(valor) {
 function saldos(fecha_inicio) {
   return new Promise(function(resolve, reject) {
     let pagos = { efectivo: 0, transferencia: 0 };
-    console.log(fecha_inicio)
     $.ajax({
       type: "POST",
       url: "traersaldos.php",
@@ -23,7 +22,6 @@ function saldos(fecha_inicio) {
         fecha_inicio: fecha_inicio
       },
       success: function(data) {
-        console.log(data)
         let cuentas = data;
         let efectivo = 0;
         let transferencia = 0; 

@@ -22,18 +22,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $rol = $item['rol'];
         $eliminado = $item['eliminado'];
         $id_usuario= $item['id_usuario'];
-
-        if (password_verify($password, $contrasena)) {
-          $response = array(
-            'mensaje' => 'La contraseña es correcta',
-            'rol' => $rol,
-            'usuario'=> $usuario,
-            'nombre'=> $nombre,
-            'id_'=> $id_usuario
-          );
+        if ($eliminado==0) {
+          if (password_verify($password, $contrasena)) {
+            $response = array(
+              'mensaje' => 'La contraseña es correcta',
+              'rol' => $rol,
+              'usuario'=> $usuario,
+              'nombre'=> $nombre,
+              'id_'=> $id_usuario
+            );
+          } else {
+            $response = array(
+              'mensaje' => 'La contraseña es incorrecta',
+            );
+          }
         } else {
           $response = array(
-            'mensaje' => 'La contraseña es incorrecta',
+            'mensaje' => 'Este usuario fue eliminado'
           );
         }
       }

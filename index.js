@@ -11,17 +11,15 @@ function autenticarse() {
         },
         dataType: "json",
         success: function(data){
-            console.log(data)
             if (data.usuario!=null
                 ) {
-                    console.log(data)
                     swal({
                         title: "Bienvenido "+ data.nombre,
                         text: data.mensaje,
                         icon: "success",
                       }).then(()=>{
                        sessionStorage.setItem('id',data.id_)
-                        window.location.href= './Turnos/turnos.php'
+                       window.location.href= './Turnos/turnos.php'
                       })
             }else{
                 swal({

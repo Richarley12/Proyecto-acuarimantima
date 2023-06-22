@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,6 +9,8 @@
     <title>Acuarimantima</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
     <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <style>
       .bd-placeholder-img {
@@ -94,18 +96,26 @@
     <header class="py-3 mb-3 border-bottom">
         <div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
           <div class="dropdown">
-            <a href="#" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <a href="#" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-dark text-decoration-none dropdown-toggle" onclick="permisos()" data-bs-toggle="dropdown" aria-expanded="false">
               <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
             </a>
             <ul class="dropdown-menu text-small shadow">
               <li><a class="dropdown-item" href="../Turnos/turnos.php">Turnos</a></li>
               <li><a class="dropdown-item" href="../productos/productos.php">Productos</a></li>
               <li><a class="dropdown-item" href="../ventas/ventas.php">Ventas</a></li>
-              <li><a class="dropdown-item" href="#">Egresos</a></li>
-              <li><a class="dropdown-item" href="#">Clientes</a></li>
+              <li><a class="dropdown-item" href="../clientes/clientes.php">Clientes</a></li>
+              <div id="administrativo">
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">Reportes</a></li>
-              <li><a class="dropdown-item" href="#">Analytics</a></li>
+              <li><a class="dropdown-item" href="../usuarios/usuarios.php">Usuarios</a></li>
+              <li><a class="dropdown-item" href="#">Egresos</a></li>
+              <li><a class="dropdown-item" href="#">Inventario</a></li>
+              <li><a class="dropdown-item" href="#">Total Ventas</a></li>
+              <li><a class="dropdown-item" href="#">Nómina</a></li>
+              <li><a class="dropdown-item" href="#">Deudores</a></li>
+              <li><a class="dropdown-item" href="#">Dashboard</a></li>
+              </div>
+              
             </ul>
           </div>
           <div class="d-flex align-items-center">
@@ -116,10 +126,10 @@
                 <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
               </a>
               <ul class="dropdown-menu text-small shadow">
-                <!-- <li><a class="dropdown-item" href="#">New project...</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li class="dropdown-item" id="nombre_usuario"></li>
+                <!-- <li><a class="dropdown-item" href="#">Settings</a></li>
                 <li><a class="dropdown-item" href="#">Profile</a></li> -->
-                <!-- <li><hr class="dropdown-divider"></li> -->
+                <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="../index.html">Desconectarse</a></li>
               </ul>
             </div>
@@ -130,6 +140,7 @@
 </body>
 
 <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../header/header.js"></script>
 <?php  ?>
 
 </html>

@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $accion = isset($_POST['accion']) ? $_POST['accion'] : '';
   //valida qué tipo de acción va a realizar
       if ($accion == 'eliminar') {
-        $id_producto = $_POST['id_producto'];
+          $id_producto = $_POST['id_producto'];
           $sql = "UPDATE productos SET eliminado = 1 WHERE id_producto = $id_producto";
           if (mysqli_query($conn, $sql)) {   
           echo "Eliminado correctamente";
@@ -19,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $nombre=$_POST['nombre'];
             $valor=$_POST['valor'];
             $sql = "INSERT INTO productos (nombre,valor) VALUES ('$nombre','$valor')";
-  
             if (mysqli_query($conn, $sql)) {   
               echo "Producto guardado correctamente";
               } else { 
@@ -32,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $nombre=$_POST['nombre'];
             $valor=$_POST['valor'];
             $sql = "UPDATE productos SET nombre='$nombre',valor='$valor' WHERE id_producto=$id_producto;";
-  
             if (mysqli_query($conn, $sql)) {   
               echo "Producto actualizado correctamente";
               } else { 

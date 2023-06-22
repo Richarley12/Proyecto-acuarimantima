@@ -32,9 +32,9 @@ function traer_turnos() {
       }
 })})}
 
-concepto.addEventListener("input", function() {
-  buscarProductos();
-});
+// concepto.addEventListener("input", function() {
+//   buscarProductos();
+// });
 
 agregarfila1.addEventListener("click",function () {
   agregarfila(tabla1);
@@ -57,25 +57,37 @@ agregarCuenta.addEventListener("click", function () {
     if (nombre==="") {
       swal("","Debe ingresar un nombre.","error");
     } else {
-    $.ajax({
-      type:"POST",
-      url:"conexionCuentas.php",
-      data:{
-          accion:accion,
-          nombre:nombre,
-          id_turno:ultimo_turno.id_turno,
-          encargado:ultimo_turno.encargado
-      },
-      success: function(response) {
-          console.log(response);
-          window.location.reload();
-          
-        },
-        error: function(xhr, status, error) {
-          console.log("Error al eliminar producto: " + error);
+      clientes().then(function (response) {
+       let cliente=response.find(cli=>nombre==cli.nombre_cliente)
+        console.log(cliente)
+        let id_cliente
+        if (cliente==undefined) {
+          id_cliente=""
+        }else{
+          id_cliente=cliente.id_cliente
         }
-      }
-      )}}
+        $.ajax({
+            type:"POST",
+            url:"conexionCuentas.php",
+            data:{
+                id_cliente:id_cliente,
+                accion:accion,
+                nombre:nombre,
+                id_turno:ultimo_turno.id_turno,
+                encargado:ultimo_turno.encargado
+            },
+            success: function(response) {
+                console.log(response);
+                window.location.reload();
+                
+              },
+              error: function(xhr, status, error) {
+                console.log("Error al eliminar producto: " + error);
+              }
+            })
+      })
+      
+    }}
   })
   
   //agregar_Mesa(Tablacuentas)
@@ -90,11 +102,27 @@ function onLoad() {
     dataType: "json",
     success: function(data) {
       productos = data; // Almacenar los productos en la variable global
+      var select = document.getElementById("sugerencias");
+      productos.forEach(producto=>{
+        let row = "<option>"+producto.nombre+"</option>"
+        select.innerHTML += row
+      })
+    
     },
     error: function(jqXHR, textStatus, errorThrown) {
      // console.log(textStatus, errorThrown);
     }
   });
+  clientes().then(function (response) {
+     var buscador_cliente = document.getElementById("lista_clientes");
+        let clientes=response
+        i=1
+        clientes.forEach(cliente => {
+            let row = "<option>"+cliente.nombre_cliente+"</option>"
+            buscador_cliente.innerHTML += row
+  })}).catch(function(error) {
+        console.log(error);
+      });
 }
 //Funcion para agregar una cuenta
 function agregarfila() {
@@ -131,23 +159,20 @@ function agregarfila() {
     )}
   document.getElementById("concepto").value=""
 };
-//funcion para el buscador de sugerencias para añadir producto al detalle de cuenta
-function buscarProductos() {
-  var select = document.getElementById("sugerencias");
-  
-  select.innerHTML = ""; // Limpia la lista de sugerencias
+//funcion para el buscador de sugerencias para añadir clientes al detalle de cuenta
+function clientes() {
+   return new Promise(function(resolve, reject) {
+  $.ajax({
+    type:'POST',
+    url:"../clientes/clientesConexion.php",
+    data:{accion:'traer_clientes'},
+    success:function (response) {
+         resolve(response);
+        }, error: function(xhr, status, error) {
+          reject(error);
+        }
+    })})}
 
-  var filtro = productos.filter(function(producto) {
-    return producto.nombre.toLowerCase().includes(concepto.value.toLowerCase());
-  }); //solo muestra las coincidencias una vez
-
-  filtro.forEach(function(producto) {
-    var option = document.createElement("option");
-    option.value = producto.nombre;
-    select.appendChild(option);
-  }); //imprime las coincidencias en el datalist
-
-};
 //Funcion para pintar todas las mesas activas cuando carga la página
 $(document).ready(function() {
   mesas_Activas()
@@ -155,7 +180,7 @@ $(document).ready(function() {
 });
 //función para enviar el id y llamar a pintar productos
 function detalleCuenta(cuenta) {
-document.getElementById("concepto").disabled=false;//habilita el input para escribir el producto
+ document.getElementById("concepto").disabled=false;//habilita el input para escribir el producto
 document.getElementById("Nombre_cliente").textContent=cuenta.nombre_cliente;//lleva el nombre de la cuenta al detalle
 document.getElementById("idCliente").textContent=cuenta.id_cuenta;//lleva el id de la cuenta para el insert en el detalle
 

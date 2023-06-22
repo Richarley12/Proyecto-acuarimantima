@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <script src="https://kit.fontawesome.com/fa71233e36.js" crossorigin="anonymous"></script>
-    <title>Acuarimantima</title>
+    <title>Turnos Acuarimantima café-bar</title>
     <link href="../header/headers.css" rel="stylesheet">
     <link href="../ventas/ventas.css" rel="stylesheet"> 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

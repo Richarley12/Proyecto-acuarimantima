@@ -1,13 +1,13 @@
 <?php
 
 // Combinar el salt con la contraseña y generar un hash bcrypt
-$contrasena = 'richar1234';
+$contrasena = '2580';
 $saltedPassword = $contrasena;
 $hash = password_hash($saltedPassword, PASSWORD_BCRYPT);
 echo ($hash. "<br>");
-
+echo ('$2y$10$UYyV.d5HR669J/V3kT5pDusRBXYA2GOQ5nhL8o1StI9sH3BBR2/fu'."<br>");
 // Verificar una contraseña con el hash bcrypt y el salt almacenados
-$contrasenaIngresada = 'richar1234';
+$contrasenaIngresada = '2580';
 $saltedPasswordIngresada =$contrasenaIngresada;
 echo " \n $saltedPasswordIngresada";
 
