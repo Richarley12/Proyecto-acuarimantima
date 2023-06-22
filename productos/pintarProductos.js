@@ -43,7 +43,6 @@ function eliminarProducto(producto) {
         url: "conexionProductos.php",
         data: { accion:"eliminar",id_producto: producto.id_producto },
         success: function(response) {
-          console.log();
          swal({
         text: response,
         icon: "success",

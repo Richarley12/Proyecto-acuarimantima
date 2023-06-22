@@ -16,9 +16,25 @@ let inputRecaudo1=document.getElementById("valor1")
 let inputRecaudo2=document.getElementById("valor2")
 var resultado=[]
 
-concepto.addEventListener("input", function() {
-  buscarProductos();
-});
+function traer_turnos() {
+  return new Promise(function(resolve, reject) {
+    $.ajax({
+      type:"POST",
+      url:"../Turnos/traerturnos.php",
+      data:{
+        accion:'traerturnos'
+      },
+      datatype:"json",
+      success: function(data){
+        resolve(data);
+      }, error: function(xhr, status, error) {
+        reject(error);
+      }
+})})}
+
+// concepto.addEventListener("input", function() {
+//   buscarProductos();
+// });
 
 agregarfila1.addEventListener("click",function () {
   agregarfila(tabla1);
@@ -28,28 +44,52 @@ agregarCuenta.addEventListener("click", function () {
   
   let accion='insertar'
   let nombre = document.getElementById("Nombre").value
-  console.log(nombre)
-
-  if (nombre==="") {
-    swal("","Debe ingresar un nombre.","error");
-  } else {
-  $.ajax({
-    type:"POST",
-    url:"conexionCuentas.php",
-    data:{
-        accion:accion,
-        nombre:nombre,
-    },
-    success: function(response) {
-        console.log(response);
-        window.location.reload();
-        
-      },
-      error: function(xhr, status, error) {
-        console.log("Error al eliminar producto: " + error);
-      }
+  traer_turnos()
+  .then((data)=>{
+    if (data.length>1) {
+      ultimo_turno= data[data.length - 1]
+    }else {
+      ultimo_turno= data[0]
     }
-    )}
+   if (data.length===0 ||ultimo_turno.fecha_fin!==null) {
+    swal("","Debe abrir un turno.","error");
+   } else{
+    if (nombre==="") {
+      swal("","Debe ingresar un nombre.","error");
+    } else {
+      clientes().then(function (response) {
+       let cliente=response.find(cli=>nombre==cli.nombre_cliente)
+        console.log(cliente)
+        let id_cliente
+        if (cliente==undefined) {
+          id_cliente=""
+        }else{
+          id_cliente=cliente.id_cliente
+        }
+        $.ajax({
+            type:"POST",
+            url:"conexionCuentas.php",
+            data:{
+                id_cliente:id_cliente,
+                accion:accion,
+                nombre:nombre,
+                id_turno:ultimo_turno.id_turno,
+                encargado:ultimo_turno.encargado
+            },
+            success: function(response) {
+                console.log(response);
+                window.location.reload();
+                
+              },
+              error: function(xhr, status, error) {
+                console.log("Error al eliminar producto: " + error);
+              }
+            })
+      })
+      
+    }}
+  })
+  
   //agregar_Mesa(Tablacuentas)
 })
 
@@ -62,11 +102,27 @@ function onLoad() {
     dataType: "json",
     success: function(data) {
       productos = data; // Almacenar los productos en la variable global
+      var select = document.getElementById("sugerencias");
+      productos.forEach(producto=>{
+        let row = "<option>"+producto.nombre+"</option>"
+        select.innerHTML += row
+      })
+    
     },
     error: function(jqXHR, textStatus, errorThrown) {
      // console.log(textStatus, errorThrown);
     }
   });
+  clientes().then(function (response) {
+     var buscador_cliente = document.getElementById("lista_clientes");
+        let clientes=response
+        i=1
+        clientes.forEach(cliente => {
+            let row = "<option>"+cliente.nombre_cliente+"</option>"
+            buscador_cliente.innerHTML += row
+  })}).catch(function(error) {
+        console.log(error);
+      });
 }
 //Funcion para agregar una cuenta
 function agregarfila() {
@@ -103,24 +159,20 @@ function agregarfila() {
     )}
   document.getElementById("concepto").value=""
 };
-//funcion para el buscador de sugerencias para añadir producto al detalle de cuenta
-function buscarProductos() {
-  var select = document.getElementById("sugerencias");
-  
-  select.innerHTML = ""; // Limpia la lista de sugerencias
+//funcion para el buscador de sugerencias para añadir clientes al detalle de cuenta
+function clientes() {
+   return new Promise(function(resolve, reject) {
+  $.ajax({
+    type:'POST',
+    url:"../clientes/clientesConexion.php",
+    data:{accion:'traer_clientes'},
+    success:function (response) {
+         resolve(response);
+        }, error: function(xhr, status, error) {
+          reject(error);
+        }
+    })})}
 
-
-  var filtro = productos.filter(function(producto) {
-    return producto.nombre.toLowerCase().includes(concepto.value.toLowerCase());
-  }); //solo muestra las coincidencias una vez
-
-  filtro.forEach(function(producto) {
-    var option = document.createElement("option");
-    option.value = producto.nombre;
-    select.appendChild(option);
-  }); //imprime las coincidencias en el datalist
-
-};
 //Funcion para pintar todas las mesas activas cuando carga la página
 $(document).ready(function() {
   mesas_Activas()
@@ -128,7 +180,7 @@ $(document).ready(function() {
 });
 //función para enviar el id y llamar a pintar productos
 function detalleCuenta(cuenta) {
-document.getElementById("concepto").disabled=false;//habilita el input para escribir el producto
+ document.getElementById("concepto").disabled=false;//habilita el input para escribir el producto
 document.getElementById("Nombre_cliente").textContent=cuenta.nombre_cliente;//lleva el nombre de la cuenta al detalle
 document.getElementById("idCliente").textContent=cuenta.id_cuenta;//lleva el id de la cuenta para el insert en el detalle
 
@@ -143,7 +195,6 @@ function pintarProductos() {
   let id=document.getElementById("idCliente").textContent
   traerProductos(id)
   .then((cuentas) =>{
-    console.log(cuentas)
       if(cuentas.length===0){
         document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML="<tr><td colspan='9' style='text-align:center;'>Agregue un producto</td></tr>";
       } else{    
@@ -325,24 +376,37 @@ function cuentaTotal(cuenta,cTotal,cPagado,saldo_Pendiente) {
 }
 //pinta todas las mesas activas
 function mesas_Activas() {
-  document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
-  $.ajax({
-    type: "GET",
-    url: "conexionVentas.php",
-    dataType: "json",
-    success: function(data) {
-      var cuentas = data; // declarar e inicializa la variable productos aquí
-      cuentas.forEach(cuenta => {
-          if (cuenta.eliminado === "0" && cuenta.estado==="0" ) {
-              var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono'><i class='fa-solid fa-trash'></i></button> </td></tr>";
-              document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML += row;
-            }
-      });
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(textStatus, errorThrown);
+  traer_turnos()
+  .then((data)=>{
+    if (data.length>1) {
+      ultimo_turno= data[data.length - 1]
+    }else {
+      ultimo_turno= data[0]
     }
-  });
+    if (data.length===0 ||ultimo_turno.fecha_fin!==null){
+      document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML = "";
+    } else {
+      document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+      $.ajax({
+        type: "GET",
+        url: "conexionVentas.php",
+        dataType: "json",
+        success: function(data) {
+          var cuentas = data; // declarar e inicializa la variable productos aquí
+          cuentas.forEach(cuenta => {
+              if (cuenta.eliminado === "0" && cuenta.estado==="0" && cuenta.id_turno===ultimo_turno.id_turno) {
+                  var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono'><i class='fa-solid fa-trash'></i></button> </td></tr>";
+                  document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML += row;
+                }
+          });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+        }
+      });
+    }
+
+ })
 }
 
 //Fucion para cargar datos del modal de pago
@@ -609,26 +673,36 @@ async function pagoDetalleCuenta(resultado) {
 }
 }
 function mesas_Pagadas() {
-  document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
-  $.ajax({
-    type: "GET",
-    url: "conexionVentas.php",
-    dataType: "json",
-    success: function(data) {
-      var cuentas = data; // declarar e inicializa la variable productos aquí
-      cuentas.forEach(cuenta => {
-          if (cuenta.eliminado === "0" && cuenta.estado==="1" ) {
-              var row = "<tr><td onclick='pintarProductosPagados(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td></tr>";
-              document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML += row;
-            }
-      });
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(textStatus, errorThrown);
+  traer_turnos()
+  .then((data)=>{
+    if (data.length>1) {
+      ultimo_turno= data[data.length - 1]
+    }else {
+      ultimo_turno= data[0]
     }
-  });
-
-
+    if (data.length===0 ||ultimo_turno.fecha_fin!==null){
+      document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = ""
+    } else{
+      document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+      $.ajax({
+        type: "GET",
+        url: "conexionVentas.php",
+        dataType: "json",
+        success: function(data) {
+          var cuentas = data; // declarar e inicializa la variable productos aquí
+          cuentas.forEach(cuenta => {
+              if (cuenta.eliminado === "0" && cuenta.estado==="1"&& cuenta.id_turno===ultimo_turno.id_turno ) {
+                  var row = "<tr><td onclick='pintarProductosPagados(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td></tr>";
+                  document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML += row;
+                }
+          });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+        }
+      });
+    }
+})
 }
 
 function pintarProductosPagados(cuenta) {

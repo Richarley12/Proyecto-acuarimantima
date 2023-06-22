@@ -17,7 +17,10 @@
 <form class="row gx-3 gy-2 align-items-center">
   <div class="col-sm-3">
     <label class="visually-hidden" for="specificSizeInputName">Nombre</label>
-    <input id="Nombre" type="text" class="form-control" placeholder="Nombre" autocomplete="off">
+    <input list="lista_clientes" id="Nombre" type="text" class="form-control" placeholder="Nombre" autocomplete="off">
+    <datalist id="lista_clientes">
+      </datalist>
+
   </div>
   <div class="col-sm-3">
     <label class="visually-hidden" for="specificSizeInputName">Teléfono</label>
@@ -277,4 +280,7 @@
   <script src="./ventas1.js"></script>
   <script src="../productos/buscador.js"></script>
 </body>
+<footer class="my-5 pt-5 text-body-secondary text-center text-small">
+    <p class="mb-1">&copy; 2023 Acuarimántima Cafe-Bar</p>
+  </footer>
 </html>
