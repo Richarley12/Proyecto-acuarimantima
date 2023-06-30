@@ -76,8 +76,6 @@ CREATE TABLE `usuarios` (
   `eliminado` TINYINT DEFAULT 0
 );
 
-ALTER TABLE `cuenta` ADD FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`);
-
 ALTER TABLE `cuenta` ADD FOREIGN KEY (`id_turno`) REFERENCES `turno` (`id_turno`);
 
 ALTER TABLE `detalle_cuenta` ADD FOREIGN KEY (`id_cuenta`) REFERENCES `cuenta` (`id_cuenta`);

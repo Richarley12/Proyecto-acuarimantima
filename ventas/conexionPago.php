@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
     $id_cuenta=$_POST['id_cuenta'];
     $sql="UPDATE cuenta SET estado = '1', saldo_pagado=total, saldo_pendiente='0' WHERE id_cuenta='$id_cuenta'";
     if (mysqli_query($conn, $sql)) {   
-      echo "Producto actualizado";
+      echo "Cuenta actualizada";
       } else { 
         echo "Error: " . mysqli_error($conn); 
       }

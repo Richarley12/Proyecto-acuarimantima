@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $accion = isset($_POST['accion']) ? $_POST['accion'] : '';
     //valida qué tipo de accion va a realizar
     if ($accion=='insertar') {
-        $id_cliente=$_POST['id_cliente'];
+        $id_cliente = ($_POST['id_cliente'] === '0') ? null : $_POST['id_cliente'];
         $nombre=$_POST['nombre'];
         $id_turno=$_POST['id_turno'];
         $encargado=$_POST['encargado'];

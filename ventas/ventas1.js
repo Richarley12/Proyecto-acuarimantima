@@ -1,5 +1,4 @@
 
-
 function formatoMoneda(valor) {
 
   let formatted = new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP" }).format(valor);
@@ -61,11 +60,12 @@ agregarCuenta.addEventListener("click", function () {
        let cliente=response.find(cli=>nombre==cli.nombre_cliente)
         console.log(cliente)
         let id_cliente
-        if (cliente==undefined) {
-          id_cliente=""
+        if (cliente===undefined) {
+          id_cliente=0
         }else{
           id_cliente=cliente.id_cliente
         }
+        console.log(id_cliente)
         $.ajax({
             type:"POST",
             url:"conexionCuentas.php",
@@ -79,7 +79,6 @@ agregarCuenta.addEventListener("click", function () {
             success: function(response) {
                 console.log(response);
                 window.location.reload();
-                
               },
               error: function(xhr, status, error) {
                 console.log("Error al eliminar producto: " + error);
@@ -180,7 +179,8 @@ $(document).ready(function() {
 });
 //función para enviar el id y llamar a pintar productos
 function detalleCuenta(cuenta) {
- document.getElementById("concepto").disabled=false;//habilita el input para escribir el producto
+document.getElementById("concepto").disabled=false;//habilita el input para escribir el producto
+document.getElementById("concepto").value=""
 document.getElementById("Nombre_cliente").textContent=cuenta.nombre_cliente;//lleva el nombre de la cuenta al detalle
 document.getElementById("idCliente").textContent=cuenta.id_cuenta;//lleva el id de la cuenta para el insert en el detalle
 
@@ -395,7 +395,7 @@ function mesas_Activas() {
           var cuentas = data; // declarar e inicializa la variable productos aquí
           cuentas.forEach(cuenta => {
               if (cuenta.eliminado === "0" && cuenta.estado==="0" && cuenta.id_turno===ultimo_turno.id_turno) {
-                  var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono'><i class='fa-solid fa-trash'></i></button> </td></tr>";
+                  var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono'><i class='fa-solid fa-store-slash'></i></button> </td></tr>";
                   document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML += row;
                 }
           });
@@ -623,7 +623,6 @@ async function pagoDetalleCuenta(resultado) {
     console.log(error);
   })
 }else if(resultado[0].cuenta.hasOwnProperty('id_registro')){
-  console.log("entré al pago parcial")
      let id_registro=resultado[0].cuenta.id_registro
      let cpagada= resultado[0].cantidades.cpagada
      let id_cuenta=resultado[0].cuenta.id_cuenta
@@ -704,7 +703,6 @@ function mesas_Pagadas() {
     }
 })
 }
-
 function pintarProductosPagados(cuenta) {
   document.getElementById("Nombre_clienteP").textContent=cuenta.nombre_cliente
   let id = cuenta.id_cuenta
@@ -786,7 +784,6 @@ async function validarPagadocuentaTotal(id) {
     console.log(ctotal)
     console.log(cuenta[0].total)
     if (cuenta[0].total==ctotal) {
-      console.log("entre al pago total")
       swal({
         title: 'La cuenta se pagará en su totalidad',
         text: "Deseas cerrar la cuenta",
@@ -816,7 +813,6 @@ async function validarPagadocuentaTotal(id) {
           }
       })
     } else{
-      console.log('no entré al pago total')
       swal({
         text: "el pago ha sido procesado",
         icon: "success",
@@ -883,7 +879,6 @@ function ordenar(cuentas) {
       return -1;
     }
   });
-  console.log(cuentasO)
   return cuentasO
 }
 
