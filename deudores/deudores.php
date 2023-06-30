@@ -31,29 +31,26 @@
     <div class="row g-5">
       <!-- <div class="col-md-5 col-lg-4 order-md-last"> -->
       <div class="d-flex justify-content-between align-items-center">
-            <h1 class="me-auto">Clientes</h1>
+            <h1 class="me-auto" id="titulo">Deudores</h1>
+            <h4 class="me-auto" id="deuda"></h4>
             <div>
-                <button class="btn btn-secondary me-2" type="button" onclick="limpiar()" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Cliente</button>
+            <label class="visually-hidden"  for="specificSizeInputName">Nombre</label>
+            <select class="form-select form-select-sm" aria-label=".form-select-sm example" onchange=traer_cuentas_pendientes() id="Nombre">
+            <option selected>Seleccione un deudor</option>
+          </select>
             </div>
         </div>
-        <div style="display: flex; justify-content: flex-end;">
-            <select style="width: 152px;" class="chosen-select" data-placeholder="Selecciona un cliente">
-                <option></option>
-                <option>elección 1</option>
-                <option>cliente 1</option>
-            </select>
-         </div>
         <ul class="list-group mb-3">
         <div class="table-responsive rounded-3 resultado scroll">
        
-        <table class="table table-striped table-sm" id="tablaClientes">
+        <table class="table table-striped table-sm" id="tablaDeudores">
           <thead>
             <tr>
-              <th scope="col" style= "width:2%">#</th>
-              <th scope="col">Nombre</th>
-              <th scope="col" style= "width:20%; text-align:center">Usuario</th>
-              <th scope="col" style= "width:20%; text-align:center">Rol</th>
-              <th scope="col" style= "width:10%; text-align:center"></th>
+              <th scope="col" style= "text-align:center">fecha</th>
+              <th scope="col" style= "width:20%; text-align:center">Total</th>
+              <th scope="col" style= "width:20%; text-align:center">Pendiente</th>
+              <th scope="col" style= "width:30%; text-align:center">Encargado</th>
+              <th scope="col" style= "width:10%; text-align:center">Opciones</th>
             </tr>
           </thead>
           <tbody>
@@ -68,46 +65,143 @@
       <!-- </div> -->
       
       <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5">Crear usuario</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-                    <form class="row g-3">
-                <div class="col-md-6">
-                    <label for="inputEmail4" class="form-label">Usuario</label>
-                    <input type="text" class="form-control" id="usuarioNuevo" autocomplete="none"> 
-                </div>
-                <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="passwordNuevo"autocomplete="off">
-                </div>
-                <div class="col-md-6">
-                    <label for="inputCity" class="form-label">Nombre Completo</label>
-                    <input type="text" class="form-control" id="nombreCompleto"autocomplete="off">
-                </div>
-                <div class="col-md-4">
-                    <label for="inputState" class="form-label">Rol</label>
-                    <select class="form-select" id="rol">
-                    <option >admon</option>
-                    <option>user</option>
-                    </select>
-                </div>
-                </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
-      </div>
+      <div class="modal fade modal-xl" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Cuenta</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            <div id="detalle_cuenta">
+                            <fieldset>
+                            <div class="bg-light border rounded-3 resultado scroll">
+                                <h5>Detalle de la cuenta</h5>
+                              <table id="detalleCuenta" class="table table-striped table-hover table-fixed table-sm " >
+                                <thead>
+                                        <tr>
+                                        <th scope="col" class="text-center" style="width: 20%">Concepto</th>
+                                        <th scope="col" class="text-center" style="width: 8%">Cantidad</th>
+                                        <th scope="col" class="text-center"style="width: 12%" >ValorxUn</th>
+                                        <th scope="col" class="text-center"style="width: 20%" >Descu $</th>
+                                        <th scope="col" class="text-center" style="width: 10%" >Total</th>
+                                        <th scope="col" class="text-center" style="width: 12%" >Estado</th>
+                                        </tr> 
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                              </div>
+                              </fieldset>
+                              <fieldset>
+                              <div class="bg-light border rounded-3 resultado scroll">
+                              <h5>Pagos realizados</h5>
+                              <table id="detallePagos" class="table table-striped table-hover table-fixed table-sm " >
+                                <thead>
+                                        <tr>
+                                        <th scope="col" class="text-center" >Fecha</th>
+                                        <th scope="col" class="text-center" >Cantidad</th>
+                                        </tr> 
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                              </div>
+                              </fieldset>
+                              </div>
+                              <div id="inputs_Pago">
+                              <fieldset >
+                      <legend style="font-size:medium; margin-bottom:5px; margin-top:15px;font-weight: bold;">Detalle de pago</legend>
+                      <div class="box-body" >
+                          <input type="hidden" name="detallesMdp" id="detallesMdp" value="1">
+                          <div class="table-responsive">
+                              <table class="table table-contrains" id="MediosPago">
+                                  <thead>
+                                  <tr>
+                                      <th class="col-md-2">
+                                          <label for="iniciar" class="text-sm">Medio de Pago</label>
+                                      </th>
+
+                                      <th class="col-md-2">
+                                          <label for="iniciar" class="text-sm">Valor</label>
+                                      </th>
+                                  </tr>
+                                  </thead>
+                                  <!-- Fin linea -->
+                                  <tbody id="camposMediosPago" class="mediopago-inicial">
+                                  <tr id="trMediosPago-1">
+                                      <td>
+                                      <span class="form-control-label" style="vertical-align:-5px;">Efectivo</span>
+                                      </td>
+                                      <td>
+                                          <input type="number" class="form-control input-sm numeric" style="border-radius: 3px; direction: rtl; caret-color: transparent" id="valor1" autocomplete="off"/>
+                                      </td>
+                                  </tr>
+                                  <tr id="trMediosPago-1">
+                                      <td>
+                                      <span class="form-control-label" style="vertical-align:-5px;">Transferencia</span>
+                                      </td>
+                                      <td>
+                                          <input type="text" class="form-control input-sm numeric" style="border-radius: 3px; direction: rtl; caret-color: transparent" id="valor2" autocomplete="off" />
+                                      </td>
+                                  </tr>
+                                  
+                                  </tbody>
+                              </table>
+                          </div>
+                          <!-- Fin linea -->
+                      </div>
+                      <div id="alert" class="col-xs-12 text-center" style="margin-top:7px;"></div>
+                      <!--Fin de línea-->
+                      </fieldset>
+                      <fieldset class="col-md-12" style="text-align: center;" >
+    <legend style="font-size:medium; margin-bottom:5px; margin-top:15px;font-weight: bold;">Totales</legend>
+    <div class="row" style="justify-content: center;">
+        <div class="col-md-4 col-md-offset-2 col-xs-6" style="margin-bottom:3px; text-align: center; ">
+            <span class="form-control-label" style="vertical-align:-5px;">TOTAL A PAGAR</span>
+        </div>
+        <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
+            <input class="form-control input-sm numeric"style="text-align: right;font-size: 18px;font-weight: bold;border: 0px;border-radius: 2px;" value="0" id="totalCuenta" readonly>
+        </div>
     </div>
-  </div>
-</div>
-      <fieldset>
-      
-      <fieldset>
+    <!--Fin de línea-->
+    <div class="row" style="justify-content: center;">
+        <div class="col-md-4 col-md-offset-2 col-xs-6" style="margin-bottom:3px;">
+            <span class="form-control-label" style="vertical-align:-5px;">TOTAL RECAUDO</span>
+        </div>
+        <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
+            <input class="form-control input-sm numeric tooltip-warning tooltip-remover" data-placement="right"  data-trigger="manual" id="totalRecaudo" style="text-align:right; font-size:18px; font-weight:bold; border:0px;border-radius: 2px;" value="0" readonly />
+        </div>
+    </div>
+    <!--Fin de línea-->
+    <div class="row" style="justify-content: center;">
+        <div class="col-md-4 col-md-offset-2 col-xs-6" style="margin-bottom:3px; text-align: center; ">
+            <span class="form-control-label" style="vertical-align:-5px;">TOTAL A DEVOLVER</span>
+        </div>
+        <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
+            <input class="form-control input-sm numeric"style="text-align: right;font-size: 18px;font-weight: bold;border: 0px;border-radius: 2px;" value="0" id="TotalDev" readonly>
+        </div>
+    </div>
+    <div class="row" style="justify-content: center;">
+        <div class="col-md-4 col-md-offset-2 col-xs-6" style="margin-bottom:3px; text-align: center; ">
+            <span class="form-control-label" style="vertical-align:-5px;">TOTAL PENDIENTE</span>
+        </div>
+        <div class="col-md-4 col-xs-6" style="margin-bottom:3px;">
+            <input class="form-control input-sm numeric"style="text-align: right;font-size: 18px;font-weight: bold;border: 0px;border-radius: 2px;" id="totalPendiente" value="0" readonly>
+        </div>
+    </div>
+</fieldset>
+
+ </div>
+ </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cerrar</button>
+                                    <button type="button" class="btn btn-primary" id="btn_pagar" >PAGAR</button>
+                                </div>
+                    </div>
+                </div>
+            </div>
+
     </div>
   </main>
 
@@ -117,9 +211,8 @@
 </div>
 
 </body>
-<script src="../chosen_v1.8.7/chosen.jquery.js"></script>
-<script src="../clientes/clientes.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
-
+<script src="../deudores/deudores.js" ></script>
 
 </html>

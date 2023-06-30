@@ -35,6 +35,14 @@ if ($accion == 'abrirturno') {
             } else { 
               echo "Error: " . mysqli_error($conn); 
             }
+  } else if ($accion=='actualizar_Estado') {
+    $id_cuenta=$_POST['id_cuenta'];
+    $sql="UPDATE cuenta SET estado='1' WHERE id_cuenta='$id_cuenta'";
+    if (mysqli_query($conn, $sql)) {   
+      echo "Estado actualizado";
+      } else { 
+        echo "Error: " . mysqli_error($conn); 
+      }
   }
 }
 // Cerrar la conexión

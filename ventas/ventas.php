@@ -22,18 +22,18 @@
       </datalist>
 
   </div>
-  <div class="col-sm-3">
+  <!-- <div class="col-sm-3">
     <label class="visually-hidden" for="specificSizeInputName">Teléfono</label>
     <input type="number" class="form-control" id="specificSizeInputName" placeholder="Teléfono">
-  </div>
-  <div class="col-auto">
+  </div> -->
+  <!-- <div class="col-auto">
     <div class="form-check">
       <input class="form-check-input" type="checkbox" id="autoSizingCheck2">
       <label class="form-check-label" for="autoSizingCheck2">
        Guardar
       </label>
     </div>
-  </div>
+  </div> -->
   <div class="col-auto">
     <button type="button" class="btn btn-secondary" id="btnagregarMesa">AGREGAR MESA</button>
   </div>
@@ -46,15 +46,18 @@
       <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
         <div class="bg-light  rounded-3 resultado container scroll" >
              
-                <table id="cuentas" class="table table-striped table-hover table-fixed table-sm table_id">
+                <table id="cuentas" class="table table-striped table-hover table-sm table_id">
                 <thead class="sticky-top">
                   <tr>
                     <th colspan="4">
                 <div class="container  input-group">
-                <form class="form-inline  input-group" role="search">
+                <span class="input-group-text" id="inputGroup-sizing-default">Mesas activas</span>
+                 <!-- el buscador de las mesas activas está ligado al script del final -->
+                <input type="text" class="form-control light-table-filter" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" type="search" placeholder="Nombre">
+                <!-- <form class="form-inline  input-group" role="search">
                 <a class="navbar-brand">Mesas activas </a>
                 <input class="form-control me-2 light-table-filter" type="search" placeholder="Nombre" aria-label="Search">
-                </form>
+                </form> -->
               </div> 
               </th>       
               </tr>
@@ -114,10 +117,10 @@
                <tr>
                  <th colspan="4">
              <div class="container  input-group">
-             <form class="form-inline  input-group" role="search">
-             <a class="navbar-brand">Mesas pagadas </a>
-             <input class="form-control me-2" type="search" placeholder="Nombre" aria-label="Search">
-             </form>
+             <span class="input-group-text" id="inputGroup-sizing-default">Mesas pagadas</span>
+             <!-- <form class="form-inline  input-group" role="search">
+             <a class="navbar-brand">Mesas pagadas</a>
+             </form> -->
            </div> 
            </th>       
            </tr>
@@ -278,6 +281,7 @@
 
 
   <script src="./ventas1.js"></script>
+  <!-- el buscador de las mesas activas está ligado en este script -->
   <script src="../productos/buscador.js"></script>
 </body>
 <footer class="my-5 pt-5 text-body-secondary text-center text-small">

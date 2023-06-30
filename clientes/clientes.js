@@ -8,6 +8,13 @@ function guardar() {
     let nombre=document.getElementById("nombreCompleto").value
     let telefono=document.getElementById("telefono").value
     let id= document.getElementById("id_cliente").value
+    if (nombre===""||telefono==="") {
+        swal({
+            text: "Debe completar todos los datos",
+            icon: "error",
+            button: false,
+            timer: 2000,})
+    } else{
         if(id!=""){
             $.ajax({
                 type:'POST',
@@ -57,7 +64,7 @@ function guardar() {
               }
         })
      } 
-   
+    }
 } 
 
 function limpiar() {
@@ -122,7 +129,7 @@ function eliminar_cliente(cliente) {
           }
     })}else{
         swal({
-          text:"¡Tu producto está a salvo!",
+          text:"¡Tu cliente está a salvo!",
           icon: "success",
           button: false,
           timer: 1500,

@@ -13,4 +13,6 @@
   .dropdown-toggle {
     outline: 0;
   }
-  
+  .header-container {
+    position: fixed;
+  }
