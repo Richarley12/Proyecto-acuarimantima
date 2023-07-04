@@ -269,8 +269,25 @@ function actualizar_Cuenta(resultado) {
   return new Promise(function (resolve, reject) {
   let cPagado= parseInt(resultado[0].cuenta.saldo_pagado)+resultado[0].cantidades.recaudo
   let saldo_Pendiente= parseInt(resultado[0].cuenta.total)-cPagado
+
+if (saldo_Pendiente==0) {
+  accion='cuentaPagada'
+  $.ajax({//realiza la consulta en la BD para traer los productos con el id de la cuenta
+    type: "POST",
+    url: "../ventas/conexionPago.php",
+    data: {
+      accion:accion,
+      id_cuenta:resultado[0].cuenta.id_cuenta,
+    },
+    success: function(response) {
+      resolve(response);
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      reject(textStatus, errorThrown);
+    }
+  })
+}else{
   accion="actualizaTotal";
-  
   $.ajax({//Actualiza la cuenta con el pago o abono
     type: "POST",
     url: "../ventas/conexionCuentas.php",
@@ -287,7 +304,9 @@ function actualizar_Cuenta(resultado) {
     error: function(jqXHR, textStatus, errorThrown) {
       reject(textStatus, errorThrown);
     }
-  })})
+  })
+}
+  })
 }
 
 function pagar(resultado) {
