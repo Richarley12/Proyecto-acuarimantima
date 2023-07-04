@@ -1,10 +1,6 @@
 <?php
 // Conectar a la base de datos
 
-$servername= "localhost";
-$username="u493973480_acuacafebar";
-$password = "Caboxa1234.";
-$dbname = "u493973480_acuarimantima";
 
 // $servername= "localhost";
 // $username="root";
