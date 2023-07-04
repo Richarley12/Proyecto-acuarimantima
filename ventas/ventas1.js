@@ -395,7 +395,7 @@ function mesas_Activas() {
           var cuentas = data; // declarar e inicializa la variable productos aquí
           cuentas.forEach(cuenta => {
               if (cuenta.eliminado === "0" && cuenta.estado==="0" && cuenta.id_turno===ultimo_turno.id_turno) {
-                  var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono'><i class='fa-solid fa-store-slash'></i></button> </td></tr>";
+                  var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono' onclick='cerrar_mesa("+JSON.stringify(cuenta)+")' ><i class='fa-solid fa-store-slash'></i></button> </td></tr>";
                   document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML += row;
                 }
           });
@@ -923,4 +923,50 @@ function eliminarProducto(id) {
   })
   
 }
+
+function cerrar_mesa(mesa) {
+    $.ajax({
+      type: "POST",
+      url: "conexionDetalleCuenta.php",
+      dataType:"json",
+      data:{
+        id_cuenta:mesa.id_cuenta
+      },
+      success: function (response) {
+        let activo=0
+        response.forEach((producto)=>{
+          if (producto.eliminado==0 && producto.pagado==0 ) {
+            activo=1
+          }
+        })
+        if (activo==1) {
+          swal({
+            text: "La cuenta tiene productos pendientes",
+            icon: "info",
+            button: true,
+          })
+        } else {
+           pagarCuentaTotal(mesa.id_cuenta).then(
+            () => {
+              swal({
+                text: "La cuenta ha sido cerrada",
+                icon: "success",
+                button: true,
+              }).then(
+                mesas_Activas(),
+                mesas_Pagadas()
+              )
+            }
+           )
+        }
+      
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        reject(textStatus, errorThrown);
+      }
+    });
+
+  
+  }
+
 window.onload = onLoad;
