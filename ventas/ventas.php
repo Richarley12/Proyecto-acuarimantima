@@ -8,6 +8,8 @@
      <script src="https://kit.fontawesome.com/fa71233e36.js" crossorigin="anonymous"></script>
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
     <title>Acuarimantima</title>
 </head>
 <body>
@@ -54,10 +56,6 @@
                 <span class="input-group-text" id="inputGroup-sizing-default">Mesas activas</span>
                  <!-- el buscador de las mesas activas está ligado al script del final -->
                 <input type="text" class="form-control light-table-filter" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" type="search" placeholder="Nombre">
-                <!-- <form class="form-inline  input-group" role="search">
-                <a class="navbar-brand">Mesas activas </a>
-                <input class="form-control me-2 light-table-filter" type="search" placeholder="Nombre" aria-label="Search">
-                </form> -->
               </div> 
               </th>       
               </tr>
@@ -106,7 +104,7 @@
   </div>
   </div>
  <br>
-
+<!-- 
   <div class=" container ">
     <div class="container pb-3 resultado">
       <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
@@ -118,9 +116,6 @@
                  <th colspan="4">
              <div class="container  input-group">
              <span class="input-group-text" id="inputGroup-sizing-default">Mesas pagadas</span>
-             <!-- <form class="form-inline  input-group" role="search">
-             <a class="navbar-brand">Mesas pagadas</a>
-             </form> -->
            </div> 
            </th>       
            </tr>
@@ -159,7 +154,7 @@
       </div>
     </div>
   </div>
-  </div>
+  </div> -->
 <!-- Modal -->
 
 <div class="modal fade modal-xl" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

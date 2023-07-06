@@ -48,9 +48,9 @@
     color: #FFF;
   }
 
-.resultado{
-    max-height: 30vh;
-    height: 30vh;
+  .resultado {
+    max-height: 80vh;
+    height:90vh;
 }
 
 .scroll{

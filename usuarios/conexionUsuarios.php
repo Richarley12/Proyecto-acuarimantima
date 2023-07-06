@@ -34,6 +34,20 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
                 'mensaje' => 'Error al eliminar'); 
               }
               echo json_encode($response);
+    } elseif ($accion=="editar_Usuario") {
+        $id_usuario = $_POST['id_usuario'];
+        $nombre=$_POST['nombre'];
+        $rol=$_POST['rol'];
+        $usuario=$_POST['usuario'];
+        $sql = "UPDATE usuarios SET usuario='$usuario',nombre='$nombre',rol='$rol'   WHERE id_usuario = $id_usuario";
+        if (mysqli_query($conn, $sql)) {   
+            $response = array(
+                'mensaje' => 'Usuario modificado correctamente');
+            }else { 
+               $response = array(
+                'mensaje' => 'Error al editar'); 
+              }
+              echo json_encode($response);
     }
 }
 $conn->close();

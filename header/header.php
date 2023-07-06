@@ -109,6 +109,7 @@
               <li><a class="dropdown-item" href="../Turnos/turnos.php">Turnos</a></li>
               <li><a class="dropdown-item" href="../productos/productos.php">Productos</a></li>
               <li><a class="dropdown-item" href="../ventas/ventas.php">Ventas</a></li>
+              <li><a class="dropdown-item"  href="../ventas_cerradas/ventas_cerradas.php">Ventas cerradas</a></li>
               <li><a class="dropdown-item" href="../clientes/clientes.php">Clientes</a></li>
               <li><a class="dropdown-item" href="../deudores/deudores.php">Deudores</a></li>
               <li><a class="dropdown-item" href="#">Gastos</a></li>

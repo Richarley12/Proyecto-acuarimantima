@@ -11,7 +11,8 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
         $pago_transferencia=$_POST['pago_transferencia'];
         $totalcuenta=$_POST['totalcuenta'];
         $devuelta=$_POST['devuelta'];
-        $sql= "INSERT INTO pagos (id_cuenta,id_detallecuenta,pago_efectivo,pago_transferencia,total_cuenta,devuelta,fecha) VALUES ('$id_cuenta','$id_detallecuenta','$pago_efectivo','$pago_transferencia','$totalcuenta','$devuelta',NOW())";
+        $fecha=$_POST['fecha'];
+        $sql= "INSERT INTO pagos (id_cuenta,id_detallecuenta,pago_efectivo,pago_transferencia,total_cuenta,devuelta,fecha) VALUES ('$id_cuenta','$id_detallecuenta','$pago_efectivo','$pago_transferencia','$totalcuenta','$devuelta','$fecha')";
         if (mysqli_query($conn, $sql)) {   
             echo "Pago agregado";
             } else { 

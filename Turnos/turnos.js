@@ -5,7 +5,7 @@ function formatoMoneda(valor) {
   let formatted = new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP" }).format(valor);
   return formatted.replace(/(\.|,)00$/g, "");
 }
-
+var fechaHoraActual = moment().tz('America/Bogota').format('YYYY-MM-DD HH:mm:ss');
 
 function entero(numero) {
   let dato = numero.replace("$", "").replace(".", "");
@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(error);
         window.location.href = '../index.html'
       });
-
     })
 });
 
@@ -151,7 +150,8 @@ function ejecutar_turno() {
         accion: 'abrirturno',
         encargado: encargado,
         saldo_inicial: saldo_inicial,
-        observacion_apertura: observacion_apertura
+        observacion_apertura: observacion_apertura,
+        fecha:fechaHoraActual
       },
       success: function (response) {
         console.log(response);
@@ -192,7 +192,7 @@ function ejecutar_turno() {
               let observacion_cierre = document.getElementById('observaciones_cierre').value
               //valida si hay mesas abiertas y si las mesas tienen clientes asociados
              
-              cerrar_mesas_pendientes()
+              cerrar_mesas_pendientes(ultimo_turno.id_turno)
               .then(function (data) {
                   let cuentas =  data; // declarar e inicializa la variable mesas aquí
                   let mesasAbiertas = ""; // variable para almacenar las mesas abiertas para mostrarlas en la alerta
@@ -222,7 +222,8 @@ function ejecutar_turno() {
                   efectivo_cierre:efectivo_cierre,
                   // egresos_efectivo:egresos_efectivo,
                   // egresos_transferencia:egresos_transferencia,
-                  observacion_cierre:observacion_cierre},
+                  observacion_cierre:observacion_cierre,
+                  fecha:fechaHoraActual},
                   success: function(response) {
                     console.log(response);
                     swal({
@@ -274,11 +275,14 @@ function abrir_cerrar() {
   }
 }
 
-function mesas_Activas() {
+function mesas_Activas(id_turno) {
   return new Promise(function (resolve, reject) {
     $.ajax({
       type: "GET",
       url: "../ventas/conexionVentas.php",
+      data:{
+        id_turno:id_turno
+      },
       dataType: "json",
       success: function (data) {
         resolve(data)
@@ -291,9 +295,9 @@ function mesas_Activas() {
 
 
 }
-function cerrar_mesas_pendientes() {
+function cerrar_mesas_pendientes(id_turno) {
 return new Promise(function (resolve,reject) {
-  mesas_Activas()
+  mesas_Activas(id_turno)
   .then(function (data) {
     let mesas = data
     mesas.forEach(mesa => {
