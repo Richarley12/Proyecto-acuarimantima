@@ -53,6 +53,10 @@
     height:90vh;
 }
 
+.detalle {
+  max-height: 30vh;
+  height: 30vh;
+}
 .scroll{
     max-height: 100%; 
     overflow-y: scroll;

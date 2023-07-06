@@ -917,8 +917,44 @@ function cerrar_mesa(mesa) {
         reject(textStatus, errorThrown);
       }
     });
-
-  
   }
+function limpiargastos() {
+  document.getElementById('observacion_gasto').value=""
+  document.getElementById('valor').value=""
+  document.getElementById('nombreGasto').value=""
+}
+
+function agregar_Gasto() {
+  let observacion_gasto= document.getElementById('observacion_gasto').value
+  let valor=document.getElementById('valor').value
+  let nombreGasto=document.getElementById('nombreGasto').value
+  let metodo= document.getElementById('metodo_pago').value
+
+console.log(observacion_gasto +" "+ valor +" "+nombreGasto+" "+metodo+" "+fechaHoraActual)
+
+//  $.ajax({
+//       type: "POST",
+//       url: "conexionPago.php",
+//       data: {
+//         accion:'registrar_Gasto',
+        
+//       },
+//       dataType: "json",
+//       success: function(data) {
+//         resolve(data);
+//       },
+//       error: function(jqXHR, textStatus, errorThrown) {
+//         reject(errorThrown);
+//       }
+//     });
+
+}
+
+
+
+
+
+
+
 
 window.onload = onLoad;

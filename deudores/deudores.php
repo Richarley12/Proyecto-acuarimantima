@@ -13,8 +13,6 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link href="../Turnos/turnos.css" rel="stylesheet"> 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
-    <!-- <link rel="stylesheet" href="../chosen_v1.8.7/docsupport/style.css"> -->
-    <!-- <link rel="stylesheet" href="../chosen_v1.8.7/docsupport/prism.css"> -->
     <link rel="stylesheet" href="../chosen_v1.8.7/chosen.css">
     
     <!-- Favicons -->
@@ -29,7 +27,6 @@
   <main>
     
     <div class="row g-5">
-      <!-- <div class="col-md-5 col-lg-4 order-md-last"> -->
       <div class="d-flex justify-content-between align-items-center">
             <h1 class="me-auto" id="titulo">Deudores</h1>
             <h4 class="me-auto" id="deuda"></h4>
@@ -62,7 +59,6 @@
         </table>
       </div>
         </ul>
-      <!-- </div> -->
       
       <!-- Modal -->
       <div class="modal fade modal-xl" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -75,8 +71,7 @@
                             <div class="modal-body">
                             <div id="detalle_cuenta">
                             <fieldset>
-                            <div class="bg-light border rounded-3 resultado scroll">
-                                <h5>Detalle de la cuenta</h5>
+                            <div class="bg-light border rounded-3 detalle scroll">
                               <table id="detalleCuenta" class="table table-striped table-hover table-fixed table-sm " >
                                 <thead>
                                         <tr>
@@ -94,7 +89,7 @@
                               </div>
                               </fieldset>
                               <fieldset>
-                              <div class="bg-light border rounded-3 resultado scroll">
+                              <div class="bg-light border rounded-3 detalle scroll">
                               <h5>Pagos realizados</h5>
                               <table id="detallePagos" class="table table-striped table-hover table-fixed table-sm " >
                                 <thead>

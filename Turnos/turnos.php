@@ -75,7 +75,7 @@
       <!-- </div> -->
       <h2>Turnos anteriores</h2>
       <fieldset>
-      <div class="table-responsive rounded-3 resultado scroll">
+      <div class="table-responsive rounded-3 detalle scroll">
         <table class="table table-striped table-sm" id="tablaTurnos">
           <thead>
             <tr>

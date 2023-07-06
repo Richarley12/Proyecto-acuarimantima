@@ -47,6 +47,14 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
       } else { 
         echo "Error: " . mysqli_error($conn); 
       }
+  }else if ($accion=='registrar_Gasto') {
+    $id_cuenta=$_POST['id_cuenta'];
+    $sql="INSERT INTO ";
+    if (mysqli_query($conn, $sql)) {   
+      echo "Gasto registrado";
+      } else { 
+        echo "Error: " . mysqli_error($conn); 
+      }
   }
 
 }
