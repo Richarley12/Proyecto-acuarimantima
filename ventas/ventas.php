@@ -39,9 +39,9 @@
   <div class="col-auto">
     <button type="button" class="btn btn-dark" id="btnagregarMesa">AGREGAR MESA</button>
   </div>
-  <!-- <div class="col-auto">
+  <div class="col-auto">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#gastoModal" onclick='limpiargastos()' >AGREGAR GASTO</button>
-  </div> -->
+  </div>
 </form>
 </div>
 <br>
@@ -278,7 +278,7 @@
             
 
 <!-- Modal -->
-<!-- <div class="modal fade" id="gastoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="gastoModalLabel" aria-hidden="true">
+<div class="modal fade" id="gastoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="gastoModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -318,7 +318,7 @@
       </div>
     </div>
   </div>
-</div> -->
+</div>
 
   <script src="./ventas1.js"></script>
   <!-- el buscador de las mesas activas está ligado en este script -->

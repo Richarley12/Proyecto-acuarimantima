@@ -59,13 +59,13 @@
             <div>
               <h6 class="my-0">Compras Efectivo</h6>
             </div>
-            <span class="text-body-secondary">En desarrollo</span>
+            <span class="text-body-secondary" id="egresos_efectivo">$0</span>
           </li>
           <li class="list-group-item d-flex justify-content-between lh-sm">
             <div>
               <h6 class="my-0">Compras Tranferencia</h6>
             </div>
-            <span class="text-body-secondary">En desarrollo</span>
+            <span class="text-body-secondary" id="egresos_transferencia">$0</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
             <span>Total</span>

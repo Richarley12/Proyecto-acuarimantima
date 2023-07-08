@@ -14,7 +14,7 @@ function entero(numero) {
 
 function saldos(fecha_inicio) {
   return new Promise(function (resolve, reject) {
-    let pagos = { efectivo: 0, transferencia: 0 };
+    let pagos = { efectivo: 0, transferencia: 0, efectivo_Egresos:0,transferencia_egresos:0};
     $.ajax({
       type: "POST",
       url: "traersaldos.php",
@@ -23,16 +23,26 @@ function saldos(fecha_inicio) {
         fecha_inicio: fecha_inicio
       },
       success: function (data) {
-        let cuentas = data;
+        let cuentas = data.pagos;
+        let egresos=data.egresos
         let efectivo = 0;
         let transferencia = 0;
+        let efectivo_Egresos=0
+        let transferencia_egresos=0
         if (data != null) {
           cuentas.forEach(function (cuenta) {
             efectivo += parseInt(cuenta.pago_efectivo) - parseInt(cuenta.devuelta);
             transferencia += parseInt(cuenta.pago_transferencia);
           });
+          egresos.forEach(function (egreso) {
+            if (egreso.metodo_pago=="Efectivo") {
+              efectivo_Egresos+= parseInt(egreso.valor)
+            }else if(egreso.metodo_pago=="Transferencia") {
+              transferencia_egresos+= parseInt(egreso.valor)
+            }
+          })
         }
-        pagos = { efectivo: efectivo, transferencia: transferencia };
+        pagos = { efectivo: efectivo, transferencia: transferencia,efectivo_Egresos:efectivo_Egresos,transferencia_egresos:transferencia_egresos };
         resolve(pagos);
       },
       error: function (xhr, status, error) {
@@ -77,12 +87,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('titulo').innerHTML = "Cierre de turno"
         saldos(ultimo_turno.fecha_inicio)
           .then(function (pagos) {
-            console.log();
             document.getElementById('ventas_transferencia').innerHTML = formatoMoneda(pagos.transferencia)
             document.getElementById('ventas_efectivo').innerHTML = formatoMoneda(pagos.efectivo)
-            let total = parseInt(ultimo_turno.saldo_inicial) + parseInt(pagos.efectivo) + parseInt(pagos.transferencia)
+            let total = (parseInt(ultimo_turno.saldo_inicial) + parseInt(pagos.efectivo)-parseInt(pagos.efectivo_Egresos)) + (parseInt(pagos.transferencia)-parseInt(pagos.transferencia_egresos))
             document.getElementById('total').innerHTML = formatoMoneda(total)
-            document.getElementById('efectivo_previsto').innerHTML = formatoMoneda(parseInt(pagos.efectivo) + parseInt(ultimo_turno.saldo_inicial))
+            document.getElementById('efectivo_previsto').innerHTML = formatoMoneda(parseInt(pagos.efectivo) + parseInt(ultimo_turno.saldo_inicial)-parseInt(pagos.efectivo_Egresos))
+            document.getElementById('egresos_efectivo').innerHTML=formatoMoneda(pagos.efectivo_Egresos)
+            document.getElementById('egresos_transferencia').innerHTML=formatoMoneda(pagos.transferencia_egresos)
           })
           .catch(function (error) {
             console.log(error);
@@ -154,7 +165,6 @@ function ejecutar_turno() {
         fecha:fechaHoraActual
       },
       success: function (response) {
-        console.log(response);
         swal({
           text: response,
           icon: "success",
@@ -182,13 +192,14 @@ function ejecutar_turno() {
           }
           saldos(ultimo_turno.fecha_inicio)
             .then(function (pagos) {
+              console.log(pagos)
               let ventas_efectivo = pagos.efectivo
               let efectivo_previsto = parseInt(pagos.efectivo) + parseInt(ultimo_turno.saldo_inicial)
               let ventas_transferencia = pagos.transferencia
-              let total = parseInt(ultimo_turno.saldo_inicial) + parseInt(pagos.efectivo) + parseInt(pagos.transferencia)
+              let total = (parseInt(ultimo_turno.saldo_inicial) + parseInt(pagos.efectivo)-parseInt(pagos.efectivo_Egresos)) + (parseInt(pagos.transferencia)-parseInt(pagos.transferencia_egresos))
               let efectivo_cierre = document.getElementById('previsto').value
-              // let egresos_efectivo=0
-              // let egresos_transferencia=0
+              let egresos_efectivo=pagos.efectivo_Egresos
+              let egresos_transferencia=pagos.transferencia_egresos
               let observacion_cierre = document.getElementById('observaciones_cierre').value
               //valida si hay mesas abiertas y si las mesas tienen clientes asociados
              
@@ -201,43 +212,26 @@ function ejecutar_turno() {
                       mesasAbiertas += cuenta.nombre_cliente + "\n";
                     }
                   });
-                  swal({
-                    title: "Las siguientes mesas siguen abiertas:",
-                    text: mesasAbiertas + "¿Desea pasarlas a deudores?",
-                    icon: "info",
-                    buttons: {
-                      confirm: "Sí",
-                      cancel: "No",
-                    },
-                  }).then(() => {
-              $.ajax({
-                type:"POST",
-                url:"conexionTurnos.php",
-                data:{
-                  accion:"cerrarturno",
-                  id_turno:ultimo_turno.id_turno,
-                  ventas_efectivo:ventas_efectivo,
-                  ventas_transferencia:ventas_transferencia,
-                  total:total,
-                  efectivo_cierre:efectivo_cierre,
-                  // egresos_efectivo:egresos_efectivo,
-                  // egresos_transferencia:egresos_transferencia,
-                  observacion_cierre:observacion_cierre,
-                  fecha:fechaHoraActual},
-                  success: function(response) {
-                    console.log(response);
+                  let datos_Insertar={id_turno:ultimo_turno.id_turno,ventas_efectivo:ventas_efectivo,ventas_transferencia:ventas_transferencia,total:total,efectivo_cierre:efectivo_cierre, egresos_efectivo:egresos_efectivo,egresos_transferencia:egresos_transferencia, observacion_cierre:observacion_cierre}
+                  if (mesasAbiertas!="") {
                     swal({
-                        text: response,
-                        icon: "success",
-                        button: false,
-                        timer: 1500,
-                      }).then(() => {
-                        $('#modal').modal('hide')
-                       window.location.reload();
-                      });
+                      title: "Las siguientes mesas siguen abiertas:",
+                      text: mesasAbiertas + "¿Desea pasarlas a deudores?",
+                      icon: "info",
+                      buttons: {
+                        confirm: "Sí",
+                        cancel: "No",
+                      },
+                    }).then(async () => {
+                      cuentas.forEach(async cuenta => {
+                      if (cuenta.eliminado === "0" && cuenta.estado === "0" && cuenta.id_turno === ultimo_turno.id_turno) {
+                       await actualizarEstado(cuenta.id_cuenta,2)
+                      }});
+                       await insertarCierreTurno(datos_Insertar)
+                    });
+                  }else {
+                    insertarCierreTurno(datos_Insertar)
                   }
-                })
-                  });
                 }
                 )
             })
@@ -303,24 +297,60 @@ return new Promise(function (resolve,reject) {
     mesas.forEach(mesa => {
       if ((mesa.saldo_pendiente == 0||mesa.saldo_pendiente == null) && (mesa.estado == 0)) {
         mesa.estado = 1
-        $.ajax({//realiza la consulta en la BD para traer los productos con el id de la cuenta
-          type: "POST",
-          url: "conexionTurnos.php",
-          data: {
-            accion: 'actualizar_Estado',
-            id_cuenta: mesa.id_cuenta,
-          },
-          success: function (response) {
-            console.log(response);
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus, errorThrown);
-          }
-        });
+        actualizarEstado(mesa.id_cuenta,1)
       }
     })
     resolve(mesas)
   })
-})
+})}
+function actualizarEstado(id_cuenta,estado) {
+  return new Promise (function (resolve,reject) {
+    $.ajax({
+      type: "POST",
+      url: "conexionTurnos.php",
+      data: {
+        accion: 'actualizar_Estado',
+        id_cuenta: id_cuenta,
+        estado: estado //el nuevo estado a pagado
+      },
+      success: function (response) {
+        resolve(response);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        reject(textStatus, errorThrown);
+      }
+    });
+  })
+}
+
+function insertarCierreTurno(datos) {
+ return new Promise(function (resolve,reject) {
+   $.ajax({
+    type:"POST",
+    url:"conexionTurnos.php",
+    data:{
+      accion:"cerrarturno",
+      id_turno:datos.id_turno,
+      ventas_efectivo:datos.ventas_efectivo,
+      ventas_transferencia:datos.ventas_transferencia,
+      total:datos.total,
+      efectivo_cierre:datos.efectivo_cierre,
+      egresos_efectivo:datos.egresos_efectivo,
+      egresos_transferencia:datos.egresos_transferencia,
+      observacion_cierre:datos.observacion_cierre,
+      fecha:fechaHoraActual},
+      success: function(response) {
+        swal({
+            text: response,
+            icon: "success",
+            button: false,
+            timer: 1500,
+          }).then(() => {
+            $('#modal').modal('hide')
+           window.location.reload();
+          });
+      }
+    })
+ })
  
 }

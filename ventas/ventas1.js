@@ -41,7 +41,6 @@ agregarfila1.addEventListener("click",function () {
 })
 
 agregarCuenta.addEventListener("click", function () {
-  
   let accion='insertar'
   let nombre = document.getElementById("Nombre").value
   traer_turnos()
@@ -59,7 +58,6 @@ agregarCuenta.addEventListener("click", function () {
     } else {
       clientes().then(function (response) {
        let cliente=response.find(cli=>nombre==cli.nombre_cliente)
-        console.log(cliente)
         let id_cliente
         if (cliente===undefined) {
           id_cliente=0
@@ -79,6 +77,7 @@ agregarCuenta.addEventListener("click", function () {
             },
             success: function(response) {
                 mesas_Activas()
+                Limpiar_detalle()
               },
               error: function(xhr, status, error) {
                 console.log("Error al eliminar producto: " + error);
@@ -148,7 +147,6 @@ function agregarfila() {
         valor:result.valor,
     },
     success: function(response) {
-        console.log(response);
         pintarProductos();
       },
       error: function(xhr, status, error) {
@@ -365,7 +363,6 @@ function cuentaTotal(cuenta,cTotal,cPagado,saldo_Pendiente) {
       saldo_Pendiente:saldo_Pendiente
     },
     success: function(response) {
-      console.log(response);
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(textStatus, errorThrown);
@@ -395,10 +392,9 @@ function mesas_Activas() {
         dataType: "json",
         success: function(data) {
           var cuentas = data; // declarar e inicializa la variable productos aquí
-          console.log(cuentas)
           cuentas.forEach(cuenta => {
               if (cuenta.eliminado === "0" && cuenta.estado==="0" && cuenta.id_turno===ultimo_turno.id_turno) {
-                  var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono' onclick='cerrar_mesa("+JSON.stringify(cuenta)+")' ><i class='fa-solid fa-store-slash'></i></button> </td></tr>";
+                  var row = "<tr><td onclick='detalleCuenta(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td><td style='text-align:center'><button onclick='detalleCuenta(" + JSON.stringify(cuenta)+")' type='button' class='icono'><i class='fa-solid fa-eye'></i></button> <button data-bs-toggle='modal' data-bs-target='#staticBackdrop' type='button' class='icono'  onclick='modalPagocuentaTotal("+1+"," + JSON.stringify(cuenta)+")' ><i class='fa-solid fa-cash-register'></i></button> <button type='button' class='icono' onclick='cerrar_mesa("+JSON.stringify(cuenta)+")' ><i class='fa-solid fa-store-slash'></i></button></td></tr>";
                   document.getElementById("cuentas").getElementsByTagName('tbody')[0].innerHTML += row;
                 }
           });
@@ -894,10 +890,27 @@ function cerrar_mesa(mesa) {
         })
         if (activo==1) {
           swal({
-            text: "La cuenta tiene productos pendientes",
+            text: "La cuenta tiene productos pendientes, ¿desea pasarla a deudores?",
             icon: "info",
-            button: true,
-          })
+            buttons:{
+              cancel:"No",
+              confirm:"Sí"
+              }
+          }).then(async(confirmado)=>{
+            if (confirmado) {
+              await pasar_Deudores(mesa.id_cuenta,2).then(
+                swal({
+                  text: "La cuenta ha sido pasada correctamente",
+                  icon: "success",
+                  button: true,
+                }).then(
+                  mesas_Activas(),
+                  Limpiar_detalle() 
+                )
+             )
+            }
+          }
+          )
         } else {
            pagarCuentaTotal(mesa.id_cuenta).then(
             () => {
@@ -907,7 +920,8 @@ function cerrar_mesa(mesa) {
                 button: true,
               }).then(
                 mesas_Activas(),
-              )
+                Limpiar_detalle() 
+                )
             }
            )
         }
@@ -930,31 +944,80 @@ function agregar_Gasto() {
   let nombreGasto=document.getElementById('nombreGasto').value
   let metodo= document.getElementById('metodo_pago').value
 
-console.log(observacion_gasto +" "+ valor +" "+nombreGasto+" "+metodo+" "+fechaHoraActual)
 
-//  $.ajax({
-//       type: "POST",
-//       url: "conexionPago.php",
-//       data: {
-//         accion:'registrar_Gasto',
-        
-//       },
-//       dataType: "json",
-//       success: function(data) {
-//         resolve(data);
-//       },
-//       error: function(jqXHR, textStatus, errorThrown) {
-//         reject(errorThrown);
-//       }
-//     });
+traer_turnos()
+  .then((data)=>{
+    if (data.length>1) {
+      ultimo_turno= data[data.length - 1]
+    }else {
+      ultimo_turno= data[0]
+    }
+   if (data.length===0 ||ultimo_turno.fecha_fin!==null) {
+    swal("","Debe abrir un turno.","error");
+   } else{
+    if (valor===""||nombreGasto==="") {
+      swal("","Debe ingresar todos los campos.","error");
+    } else {
 
-}
+ $.ajax({
+      type: "POST",
+      url: "conexionPago.php",
+      data: {
+        accion:'registrar_Gasto',
+        observacion_gasto:observacion_gasto,
+        valor:valor,
+        producto:nombreGasto,
+        metodo:metodo,
+        fecha:fechaHoraActual
+      },
+      dataType: "json",
+      success: function(response) {
+        swal({
+          text: response,
+          icon: "success",
+          button: true,
+        }).then(
+          mesas_Activas(),
+          $('#gastoModal').modal('hide'),
+          Limpiar_detalle() 
+        )
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus,errorThrown)
+      }
+    });
+    }}})}
 
-
-
-
-
-
-
+  function pasar_Deudores(id_cuenta,estado) {
+    return new Promise (function (resolve,reject) {
+      $.ajax({
+        type: "POST",
+        url: "../Turnos/conexionTurnos.php",
+        data: {
+          accion: 'actualizar_Estado',
+          id_cuenta: id_cuenta,
+          estado: estado //el nuevo estado a deudores
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          reject(textStatus, errorThrown);
+        }
+      });
+    })
+  }  
 
 window.onload = onLoad;
+//función que limpia la tabla de detalle
+function Limpiar_detalle() {
+  document.getElementById('Nombre').value=""
+  document.getElementById("Total_cuenta").textContent=""
+  document.getElementById("saldo_Pendiente").textContent=""
+  document.getElementById("Nombre_cliente").textContent=""
+  document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+  document.getElementById("concepto").disabled=true;//habilita el input para escribir el producto
+  document.getElementById("concepto").value=""
+  document.getElementById("Nombre_cliente").textContent="";//lleva el nombre de la cuenta al detalle
+  document.getElementById("idCliente").textContent="";//lleva el id de la cuenta para el insert en el detalle
+}
