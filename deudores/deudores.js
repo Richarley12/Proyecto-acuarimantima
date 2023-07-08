@@ -8,6 +8,9 @@ function formatoMoneda(valor) {
   let formatted = new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP" }).format(valor);
 return formatted.replace(/(\.|,)00$/g, "");
 }
+
+var fechaHoraActual = moment().tz('America/Bogota').format('YYYY-MM-DD HH:mm:ss');
+
 //función que modifica el formato de fecha de la base de datos y la muestra más sencilla con el día
 function formato_Fecha(fechaString) {
   const fecha = new Date(fechaString);
@@ -85,7 +88,6 @@ async function ver_DetalleCuenta(cuenta,bandera) {
     document.getElementById('btn_pagar').style.display="none"
     let productos= await traer_detalleCuenta(cuenta.id_cuenta)
     let pagos= await pagos_Realizados(cuenta.id_cuenta)
-    console.log(pagos)
     let cTotal=0;
     productos= ordenar(productos)
     productos.forEach(cuenta => {
@@ -100,7 +102,13 @@ async function ver_DetalleCuenta(cuenta,bandera) {
              cTotal+=total
      })
      pagos.forEach(pago=>{
-      let row= "<tr><td style='text-align:center'>"+ formato_Fecha(pago.fecha)+ "</td><td style='text-align:center'>"+formatoMoneda(pago.total_cuenta)+'</td></tr>'
+      let row= "<tr><td style='text-align:center'>"+ formato_Fecha(pago.fecha)+ "</td><td style='text-align:center'>"+formatoMoneda(pago.total_cuenta)
+      if (pago.pago_efectivo!=0) {
+        row+= "</td><td style='text-align:center'>Efectivo</td></tr>"
+      } else {
+        row+= "</td><td style='text-align:center'>Transferencia</td></tr>"
+      }
+      
       document.getElementById("detallePagos").getElementsByTagName('tbody')[0].innerHTML +=row
      })
   } else {
@@ -253,7 +261,8 @@ function guardar_pago(resultado) {
       pago_efectivo:resultado[0].cantidades.efectivo,
       pago_transferencia:resultado[0].cantidades.transferencia,
       totalcuenta:resultado[0].cantidades.recaudo,
-      devuelta:resultado[0].cantidades.tdevolver
+      devuelta:resultado[0].cantidades.tdevolver,
+      fecha:fechaHoraActual
     },
     success:function(response) {
       resolve(response);

@@ -48,11 +48,15 @@
     color: #FFF;
   }
 
-.resultado{
-    max-height: 30vh;
-    height: 30vh;
+  .resultado {
+    max-height: 80vh;
+    height:80vh;
 }
 
+.detalle {
+  max-height: 30vh;
+  height: 30vh;
+}
 .scroll{
     max-height: 100%; 
     overflow-y: scroll;

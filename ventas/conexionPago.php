@@ -1,6 +1,5 @@
 <?php
 require_once "../session.php";
-
 if ($_SERVER['REQUEST_METHOD']=='POST') {
     // Obtener los parámetros de la solicitud
     $accion = isset($_POST['accion']) ? $_POST['accion'] : '';
@@ -11,7 +10,8 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
         $pago_transferencia=$_POST['pago_transferencia'];
         $totalcuenta=$_POST['totalcuenta'];
         $devuelta=$_POST['devuelta'];
-        $sql= "INSERT INTO pagos (id_cuenta,id_detallecuenta,pago_efectivo,pago_transferencia,total_cuenta,devuelta,fecha) VALUES ('$id_cuenta','$id_detallecuenta','$pago_efectivo','$pago_transferencia','$totalcuenta','$devuelta',NOW())";
+        $fecha=$_POST['fecha'];
+        $sql= "INSERT INTO pagos (id_cuenta,id_detallecuenta,pago_efectivo,pago_transferencia,total_cuenta,devuelta,fecha) VALUES ('$id_cuenta','$id_detallecuenta','$pago_efectivo','$pago_transferencia','$totalcuenta','$devuelta','$fecha')";
         if (mysqli_query($conn, $sql)) {   
             echo "Pago agregado";
             } else { 
@@ -45,6 +45,26 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
       echo "Cuenta actualizada";
       } else { 
         echo "Error: " . mysqli_error($conn); 
+      }
+  }else if ($accion=='registrar_Gasto') {
+        $observacion_gasto=$_POST['observacion_gasto'];
+        $valor=$_POST['valor'];
+        $producto=$_POST['producto'];
+        $metodo=$_POST['metodo'];
+        $fecha=$_POST['fecha'];
+        // Iniciar la transacción
+        mysqli_begin_transaction($conn);
+      try {
+        $sql_egreso ="INSERT INTO egresos (concepto,valor,fecha,metodo_pago,observaciones) VALUES ('compra turno','$valor','$fecha','$metodo','$observacion_gasto')";
+        mysqli_query($conn, $sql_egreso);
+        $id_egreso = mysqli_insert_id($conn); // Obtener el id_egreso insertado
+        $sql_detalle ="INSERT INTO detalle_egreso (id_egreso,producto,valor,cantidad) VALUES ('$id_egreso','$producto','$valor',1)";
+        mysqli_query($conn, $sql_detalle);
+        mysqli_commit($conn);
+        echo json_encode("Gasto registrado correctamente") ;
+      } catch (\Throwable $th) {
+        mysqli_rollback($conn);
+        echo json_encode("Error al insertar los datos: " . $e->getMessage());
       }
   }
 

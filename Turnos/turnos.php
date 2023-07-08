@@ -13,6 +13,8 @@
     <link href="../Turnos/turnos.css" rel="stylesheet"> 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/checkout/">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
 
     <!-- Favicons -->
 <link rel="apple-touch-icon" href="/docs/5.3/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
@@ -57,13 +59,13 @@
             <div>
               <h6 class="my-0">Compras Efectivo</h6>
             </div>
-            <span class="text-body-secondary">En desarrollo</span>
+            <span class="text-body-secondary" id="egresos_efectivo">$0</span>
           </li>
           <li class="list-group-item d-flex justify-content-between lh-sm">
             <div>
               <h6 class="my-0">Compras Tranferencia</h6>
             </div>
-            <span class="text-body-secondary">En desarrollo</span>
+            <span class="text-body-secondary" id="egresos_transferencia">$0</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
             <span>Total</span>
@@ -73,7 +75,7 @@
       <!-- </div> -->
       <h2>Turnos anteriores</h2>
       <fieldset>
-      <div class="table-responsive rounded-3 resultado scroll">
+      <div class="table-responsive rounded-3 detalle scroll">
         <table class="table table-striped table-sm" id="tablaTurnos">
           <thead>
             <tr>

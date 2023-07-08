@@ -1,8 +1,9 @@
 <?php
 require_once "../session.php";
 
+$id_turno=$_GET['id_turno'];
 // Consulta para obtener los datos de la tabla
-$sql = "SELECT * FROM cuenta WHERE eliminado=0";
+$sql = "SELECT * FROM cuenta WHERE eliminado=0 AND id_turno='$id_turno' ";
 $resultado = $conn->query($sql);
 // Crear un array para almacenar los datos
 $cuentas = array();

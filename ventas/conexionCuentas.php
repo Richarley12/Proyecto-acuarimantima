@@ -10,7 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $nombre=$_POST['nombre'];
         $id_turno=$_POST['id_turno'];
         $encargado=$_POST['encargado'];
-        $sql = "INSERT INTO cuenta (id_cliente,nombre_cliente,responsable,id_turno,fecha) VALUES ('$id_cliente','$nombre','$encargado','$id_turno',NOW())";
+        $fecha=$_POST['fecha'];
+        $sql = "INSERT INTO cuenta (id_cliente,nombre_cliente,responsable,id_turno,fecha) VALUES ('$id_cliente','$nombre','$encargado','$id_turno','$fecha')";
         if (mysqli_query($conn, $sql)) {
             echo "Mesa agregada";
             } else { 

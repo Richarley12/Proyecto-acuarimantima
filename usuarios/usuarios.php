@@ -67,12 +67,16 @@
       </div>
       <div class="modal-body">
                     <form class="row g-3">
+                    <div class="col-md-6" id="id_editar">
+                    <label for="inputEmail4" class="form-label">Id_user</label>
+                    <input type="text" class="form-control" id="id_user" autocomplete="none" disabled> 
+                </div> 
                 <div class="col-md-6">
                     <label for="inputEmail4" class="form-label">Usuario</label>
                     <input type="text" class="form-control" id="usuarioNuevo" autocomplete="none"> 
                 </div>
-                <div class="col-md-6">
-                    <label for="inputPassword4" class="form-label">Password</label>
+                <div class="col-md-6" id="bandera" >
+                    <label  for="inputPassword4" class="form-label">Password</label>
                     <input type="password" class="form-control" id="passwordNuevo"autocomplete="off">
                 </div>
                 <div class="col-md-6">

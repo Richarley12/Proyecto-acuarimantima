@@ -9,12 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Consulta para obtener los datos de la tabla
             $sql = "SELECT c.*
             FROM cuenta c
-            JOIN turno t ON c.id_turno = t.id_turno
             WHERE c.eliminado = 0
-              AND c.estado = 0
+              AND c.estado = 2
               AND c.total IS NOT NULL
-              AND c.saldo_pendiente != 0
-              AND t.fecha_fin IS NOT NULL";
+              AND c.saldo_pendiente != 0";
             $resultado = $conn->query($sql);
             // Crear un array para almacenar los datos
             $cuentas = array();

@@ -8,6 +8,8 @@
      <script src="https://kit.fontawesome.com/fa71233e36.js" crossorigin="anonymous"></script>
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
     <title>Acuarimantima</title>
 </head>
 <body>
@@ -35,7 +37,10 @@
     </div>
   </div> -->
   <div class="col-auto">
-    <button type="button" class="btn btn-secondary" id="btnagregarMesa">AGREGAR MESA</button>
+    <button type="button" class="btn btn-dark" id="btnagregarMesa">AGREGAR MESA</button>
+  </div>
+  <div class="col-auto">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#gastoModal" onclick='limpiargastos()' >AGREGAR GASTO</button>
   </div>
 </form>
 </div>
@@ -54,10 +59,6 @@
                 <span class="input-group-text" id="inputGroup-sizing-default">Mesas activas</span>
                  <!-- el buscador de las mesas activas está ligado al script del final -->
                 <input type="text" class="form-control light-table-filter" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" type="search" placeholder="Nombre">
-                <!-- <form class="form-inline  input-group" role="search">
-                <a class="navbar-brand">Mesas activas </a>
-                <input class="form-control me-2 light-table-filter" type="search" placeholder="Nombre" aria-label="Search">
-                </form> -->
               </div> 
               </th>       
               </tr>
@@ -106,7 +107,7 @@
   </div>
   </div>
  <br>
-
+<!-- 
   <div class=" container ">
     <div class="container pb-3 resultado">
       <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
@@ -118,9 +119,6 @@
                  <th colspan="4">
              <div class="container  input-group">
              <span class="input-group-text" id="inputGroup-sizing-default">Mesas pagadas</span>
-             <!-- <form class="form-inline  input-group" role="search">
-             <a class="navbar-brand">Mesas pagadas</a>
-             </form> -->
            </div> 
            </th>       
            </tr>
@@ -159,7 +157,7 @@
       </div>
     </div>
   </div>
-  </div>
+  </div> -->
 <!-- Modal -->
 
 <div class="modal fade modal-xl" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -171,7 +169,7 @@
                             </div>
                             <div class="modal-body">
                             <fieldset>
-                            <div class="bg-light border rounded-3 resultado scroll" id="divtabla">
+                            <div class="bg-light border rounded-3 detalle scroll" id="divtabla">
                               <table id="detalleCuenta" class="table table-striped table-hover table-fixed table-sm " >
                               <thead>
                         <tr>
@@ -279,6 +277,48 @@
             </div>
             
 
+<!-- Modal -->
+<div class="modal fade" id="gastoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="gastoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="gastoModalLabel">Registrar gasto</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form class="form-inline">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="inputCity" class="form-label">Nombre gasto</label>
+              <input type="text" class="form-control" id="nombreGasto" autocomplete="off">
+            </div>
+            <div class="col-md-3">
+              <label for="inputNumber" class="form-label">Valor</label>
+              <input type="number" class="form-control" id="valor" autocomplete="off">
+            </div>
+            <div class="col-md-3">
+            <label for="inputState" class="form-label">Método</label>
+                    <select class="form-select" id="metodo_pago">
+                    <option>Efectivo</option>
+                    <option>Transferencia</option>
+                    </select>
+            </div>
+          </div>
+        </form>
+                <form class="row g-3">
+                <div class="mb-3">
+            <label for="message-text" class="col-form-label">Observaciones:</label>
+            <textarea class="form-control" id="observacion_gasto" ></textarea>
+          </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick='agregar_Gasto()' >Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <script src="./ventas1.js"></script>
   <!-- el buscador de las mesas activas está ligado en este script -->
