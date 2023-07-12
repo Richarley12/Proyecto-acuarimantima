@@ -252,7 +252,6 @@ if (bandera===1) {//verifica si reduce la cantidad
           cantidad:cantidad,
       },
       success: function(response) {
-          console.log(response);
           pintarProductos();
         },
         error: function(xhr, status, error) {

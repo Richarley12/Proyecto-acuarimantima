@@ -22,7 +22,6 @@
                 <p class="fs-3"> <span class="text-danger">Opps!</span> Error en la página.</p>
                 <p class="lead">
                   </p>
-                  <button >prueba</button>
                 <!-- <a href="index.html" class="btn btn-primary">Go Home</a> -->
             </div>
         </div>
