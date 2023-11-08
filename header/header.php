@@ -93,13 +93,13 @@
               <div id="administrativo">
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="../Pagos/pagos.php">Pagos</a></li>
-              <li><a class="dropdown-item" href="#">Gastos</a></li>
-              <li><a class="dropdown-item" href="#">Reportes</a></li>
+              <li><a class="dropdown-item" href="../gastos/gastos.php">Gastos</a></li>
+              <li><a class="dropdown-item" href="../construccion/construccion.php">Reportes</a></li>
               <li><a class="dropdown-item" href="../usuarios/usuarios.php">Usuarios</a></li>
-              <li><a class="dropdown-item" href="#">Inventario</a></li>
-              <li><a class="dropdown-item" href="#">Total Ventas</a></li>
-              <li><a class="dropdown-item" href="#">Nómina</a></li>
-              <li><a class="dropdown-item" href="#">Dashboard</a></li>
+              <li><a class="dropdown-item" href="../inventario/inventario.php">Inventario</a></li>
+              <li><a class="dropdown-item" href="../construccion/construccion.php">Total Ventas</a></li>
+              <li><a class="dropdown-item" href="../construccion/construccion.php">Nómina</a></li>
+              <li><a class="dropdown-item" href="../construccion/construccion.php">Dashboard</a></li>
               </div>          
             </ul>
           </div>

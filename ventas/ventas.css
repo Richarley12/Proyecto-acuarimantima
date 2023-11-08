@@ -57,6 +57,12 @@
   max-height: 30vh;
   height: 30vh;
 }
+
+.ventascerradas{
+  max-height: 40vh;
+  height: 40vh;
+}
+
 .scroll{
     max-height: 100%; 
     overflow-y: scroll;

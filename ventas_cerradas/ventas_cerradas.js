@@ -62,11 +62,12 @@ function mesas_Pagadas() {
   })
   }
 
-  function pintarProductosPagados(cuenta) {
+ async function pintarProductosPagados(cuenta) {
     document.getElementById("Nombre_clienteP").textContent=cuenta.nombre_cliente
     let id = cuenta.id_cuenta
-    document.getElementById("tabla2").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
-    traerProductos(id)
+    document.getElementById("tabla2").getElementsByTagName('tbody')[0].innerHTML = "";
+    document.getElementById("detallePagos").getElementsByTagName('tbody')[0].innerHTML="";//limpia la tabla antes de traer los datos
+   await traerProductos(id)
       .then((cuentas) => {
         let cTotal=0
         cuentas.forEach(cuenta => {
@@ -82,6 +83,17 @@ function mesas_Pagadas() {
       .catch((error) => {
         console.log(error);
       });
+    await pagos_Realizados(id).then((pagos) => {
+      pagos.forEach(pago=>{
+        let row= "<tr><td style='text-align:center'>"+ formato_Fecha(pago.fecha)+ "</td><td style='text-align:center'>"+formatoMoneda(pago.total_cuenta)
+        if (pago.pago_efectivo!=0) {
+          row+= "</td><td style='text-align:center'>Efectivo</td></tr>"
+        } else {
+          row+= "</td><td style='text-align:center'>Transferencia</td></tr>"
+        }
+        document.getElementById("detallePagos").getElementsByTagName('tbody')[0].innerHTML +=row
+       })
+    })
   }
 
   function traerProductos(id_cuenta) {
@@ -101,4 +113,38 @@ function mesas_Pagadas() {
         }
       });
     });
+  }
+
+  function pagos_Realizados(id_cuenta) {
+    return new Promise(function (resolve,reject) {
+      $.ajax({
+          type: "POST",
+          url: "../deudores/conexionDeudores.php",
+          dataType: "json",
+          data:{
+              accion:'consultar_Pagos',
+              id_cuenta : id_cuenta
+          },
+          success: function(data) {
+              resolve(data)
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            reject(textStatus, errorThrown);
+          }
+        });
+  })
+  }
+  
+
+  function formato_Fecha(fechaString) {
+    const fecha = new Date(fechaString);
+  
+    const opcionesFormato = {
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    };
+  
+    return fecha.toLocaleDateString('es-CO', opcionesFormato);
   }

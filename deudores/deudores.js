@@ -29,17 +29,17 @@ function traer_cuentas_pendientes() {
     let cliente_seleccionado= document.getElementById("Nombre").value
     document.getElementById('tablaDeudores').getElementsByTagName('tbody')[0].innerHTML=""
     document.getElementById("Nombre").value= "Seleccione un deudor"
+    document.getElementById("deuda").innerHTML=""
     mesas_Pendientes().then((data)=>{
+      let total_deuda=0
       data.forEach(cuenta=>{
-        let total_deuda=0
         if (cliente_seleccionado==cuenta.nombre_cliente) {
           document.getElementById('titulo').innerHTML=cliente_seleccionado
           row = "<tr><td style='text-align:center'>"+formato_Fecha(cuenta.fecha)+"</td><td style='text-align:center'>"+formatoMoneda(cuenta.total)+"</td><td style='text-align:center'>"+formatoMoneda(cuenta.saldo_pendiente)+"</td><td style='text-align:center'>"+cuenta.responsable+"</td><td style='text-align:center'><button type='button' data-bs-toggle='modal' data-bs-target='#staticBackdrop' class='icono' onclick='ver_DetalleCuenta("+JSON.stringify(cuenta) +")' ><i class='fa-solid fa-money-bill'></i></button> <button type='button' class='icono' data-bs-toggle='modal' data-bs-target='#staticBackdrop' onclick='ver_DetalleCuenta("+JSON.stringify(cuenta)+","+1+")' ><i class='fa-solid fa-eye''></i></button></td></tr>"
           document.getElementById('tablaDeudores').getElementsByTagName('tbody')[0].innerHTML +=row
-          total_deuda+=cuenta.saldo_pendiente
-          document.getElementById("deuda").innerHTML=formatoMoneda(total_deuda)
+          total_deuda+= parseInt(cuenta.saldo_pendiente)
         }
-          
+        document.getElementById("deuda").innerHTML=formatoMoneda(total_deuda)
       })  
     })
     }
@@ -276,7 +276,7 @@ function guardar_pago(resultado) {
 
 function actualizar_Cuenta(resultado) {
   return new Promise(function (resolve, reject) {
-  let cPagado= parseInt(resultado[0].cuenta.saldo_pagado)+resultado[0].cantidades.recaudo
+  let cPagado= parseInt(resultado[0].cuenta.saldo_pagado)+ (resultado[0].cantidades.recaudo- resultado[0].cantidades.tdevolver)
   let saldo_Pendiente= parseInt(resultado[0].cuenta.total)-cPagado
 
 if (saldo_Pendiente==0) {
@@ -320,18 +320,43 @@ if (saldo_Pendiente==0) {
 
 function pagar(resultado) {
   return new Promise(function (resolve, reject) {
-     guardar_pago(resultado)
-        .then(() => {
-           actualizar_Cuenta(resultado)
-              .then(() => {
-                 resolve("Guardado correcto");
-              })
-              .catch(error => {
-                 reject("Error al actualizar la cuenta: " + error);
-              });
+    Swal.fire({
+      title: 'Procesando pago...',
+      html: 'Espere mientras se procesa el pago...',
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    try {
+       Promise.all([guardar_pago(resultado), 
+        new Promise((resolve) => {
+            resolve(actualizar_Cuenta(resultado))
+            ;
         })
-        .catch(error => {
-           reject("Error al guardar el pago: " + error);
-        });
+      ]);
+      // Cerrar SweetAlert de espera
+      Swal.close();
+      resolve("Guardado correcto")
+    } catch (error) {
+      // Cerrar SweetAlert de espera en caso de error
+      Swal.close();
+      // Mostrar SweetAlert de error
+      swal("", "Ocurrió un error al procesar el pago.", "error");
+      reject("Error al guardar el pago: " + error);
+    }
+    //  guardar_pago(resultado)
+    //     .then(() => {
+    //        actualizar_Cuenta(resultado)
+    //           .then(() => {
+    //              resolve("Guardado correcto");
+    //           })
+    //           .catch(error => {
+    //              reject("Error al actualizar la cuenta: " + error);
+    //           });
+    //     })
+    //     .catch(error => {
+    //        reject("Error al guardar el pago: " + error);
+    //     });
   });  
 }
