@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD']== 'POST') {
     $accion=$_POST['accion'];
     if ($accion =='traer_pagos') {
-        $sql="SELECT P.id_registro, C.id_cuenta, P.fecha, nombre_cliente, total_cuenta,responsable,pago_efectivo,pago_transferencia FROM pagos P JOIN cuenta C WHERE P.id_cuenta=C.id_cuenta AND eliminado=0 AND total is not null AND P.total_cuenta != 0";
+        $sql="SELECT P.id_registro, C.id_cuenta, P.fecha, nombre_cliente, total_cuenta,responsable,pago_efectivo,pago_transferencia FROM pagos P JOIN cuenta C WHERE P.id_cuenta=C.id_cuenta AND eliminado=0 AND total is not null AND P.total_cuenta != 0 group by  id_registro desc";
         $resp=mysqli_query($conn, $sql);
         $resultado=array();
         if ($resp->num_rows>0) {

@@ -58,7 +58,7 @@ function filtrar() {
     traer_pagos().then((pagos)=>{
         if (metodo==""&&f_Inicio==""&&f_Fin=="") {
             swal({
-                text: "no ha seleccionado ningun filtro",
+                text: "No ha seleccionado ningun filtro",
                 icon: "info"})
         }else{
             filtrado=pagos

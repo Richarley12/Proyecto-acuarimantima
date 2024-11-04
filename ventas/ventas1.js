@@ -180,17 +180,16 @@ document.getElementById("concepto").disabled=false;//habilita el input para escr
 document.getElementById("concepto").value=""
 document.getElementById("Nombre_cliente").textContent=cuenta.nombre_cliente;//lleva el nombre de la cuenta al detalle
 document.getElementById("idCliente").textContent=cuenta.id_cuenta;//lleva el id de la cuenta para el insert en el detalle
-
 pintarProductos();
 
 }
 //funcion para traer los productos con el ID de la cuenta seleccionada
-function pintarProductos() {
+async function pintarProductos() {
   document.getElementById("Total_cuenta").textContent=""
   document.getElementById("saldo_Pendiente").textContent=""
   document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
   let id=document.getElementById("idCliente").textContent
-  traerProductos(id)
+  await traerProductos(id)
   .then((cuentas) =>{
       if(cuentas.length===0){
         document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML="<tr><td colspan='9' style='text-align:center;'>Agregue un producto</td></tr>";
@@ -198,10 +197,11 @@ function pintarProductos() {
       let cTotal=0;
       let cPagado=0;
       cuentas= ordenar(cuentas)
+      document.getElementById("tabla1").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
       cuentas.forEach(cuenta => {
         let total= (cuenta.valor*cuenta.cantidad)-cuenta.descuento_valor;
          if (cuenta.eliminado === "0") {
-          var row = "<tr><td>" + cuenta.nombre_producto + "</td>"+"<td></td><td style='text-align:center'>";
+          let row = "<tr><td>" + cuenta.nombre_producto + "</td>"+"<td></td><td style='text-align:center'>";
           if (cuenta.pagado === "0") {
             row += "<button onclick='suma(" + 1 + ", " + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-plus fa-1xs'></i></button>  " + cuenta.cantidad + "   <button onclick='resta(" + 1 + "," + JSON.stringify(cuenta)+")' type='button' class='sum_rest'><i class='fa-solid fa-minus'></i></button>";
           } else {
@@ -557,9 +557,32 @@ function detallePago(cTotal,tdevolver) {
  async function Pago() {
   let insertar = resultado;
   if(insertar.length>0){
-    if (insertar[0].cantidades.recaudo >= insertar[0].cantidades.cpagada) {
-      await insertarPago(insertar);
-      await  pagoDetalleCuenta(insertar);
+    if ((insertar[0].cantidades.efectivo==0) &&(insertar[0].cantidades.transferencia==0)) {
+      swal("","Debe ingresar un pago.","error")
+    }else if (insertar[0].cantidades.recaudo >= insertar[0].cantidades.cpagada) {
+      Swal.fire({
+        title: 'Procesando pago...',
+        html: 'Espere mientras se procesa el pago...',
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      try {
+        await Promise.all([insertarPago(insertar), 
+          new Promise((resolve) => {
+              resolve(pagoDetalleCuenta(insertar));
+          })
+        ]);
+        // Cerrar SweetAlert de espera
+        Swal.close();
+      } catch (error) {
+        // Cerrar SweetAlert de espera en caso de error
+        Swal.close();
+        // Mostrar SweetAlert de error
+        swal("", "Ocurrió un error al procesar el pago.", "error");
+        console.log(error);
+      }
     } else {
       swal("","El recaudo no puede ser menor a la cantidad total","error");
     }

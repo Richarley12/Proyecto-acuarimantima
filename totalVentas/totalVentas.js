@@ -1,7 +1,34 @@
+function limpiar() {
+     document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = ""
+    // document.getElementById('tabla').style.display="none"
+    // document.getElementById('titulo').innerHTML=''
+    // document.getElementById('fechaInicio').value=''
+    // document.getElementById('fechaFin').value=''
+    // document.getElementById("tabla").getElementsByTagName('tbody')[0].innerHTML=""
+    // document.getElementById('fechaInicio').disabled=false
+    // document.getElementById('fechaFin').disabled=false
+    // document.getElementById('flexSwitchCheckDefault').checked=false
+}
 
 
 $(document).ready(function() {
-    mesas_Pagadas()
+    Swal.fire({
+        title: 'Cargando',
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+    traer_turnos().then(async(e)=>{
+        if (e.length > 0){
+          pintarTurnos(e);  
+        }
+        Swal.close();
+
+    }).catch(error => {
+        swal("", "Ocurrió un error al procesar el pago.", error);
+    })
+    //mesas_Pagadas()
   });
 
   function formatoMoneda(valor) {
@@ -26,40 +53,39 @@ $(document).ready(function() {
         }
   })})}
 
-function mesas_Pagadas() {
-    traer_turnos()
-    .then((data)=>{
-      if (data.length>1) {
-        ultimo_turno= data[data.length - 1]
-      }else {
-        ultimo_turno= data[0]
-      }
-      if (data.length===0 ||ultimo_turno.fecha_fin!==null){
-        document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = ""
-      } else{
-        document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+function mesas_Pagadas(id) {
+    document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML = "";//limpia la tabla antes de traer los datos
+    Swal.fire({
+        title: 'Cargando',
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
         $.ajax({
           type: "GET",
-          url: "../ventas/conexionVentas.php",
+          url: "../totalVentas/conexionTotalVentas.php",
           data:{
-            id_turno:ultimo_turno.id_turno
+            id_turno:id
           },
           dataType: "json",
           success: function(data) {
             var cuentas = data; // declarar e inicializa la variable productos aquí
             cuentas.forEach(cuenta => {
-                if (cuenta.eliminado === "0" && cuenta.estado==="1"&& cuenta.id_turno===ultimo_turno.id_turno ) {
-                    var row = "<tr><td onclick='pintarProductosPagados(" + JSON.stringify(cuenta)+")'>" + cuenta.nombre_cliente + "</td></tr>";
+               // if (cuenta.eliminado === "0") {
+                    var row = "<tr onclick='pintarProductosPagados(" + JSON.stringify(cuenta)+")'><td>" + cuenta.nombre_cliente.trim() + "</td><td style='text-align:center'>"+formato_Fecha(cuenta.fecha)+"</td><td style='text-align:center'>"+cuenta.estado +"</td></tr>";
                     document.getElementById("cuentasPagadas").getElementsByTagName('tbody')[0].innerHTML += row;
-                  }
+                 // }
             });
+            Swal.close();
+            var modal = document.getElementById("turns");
+                var modalBS = bootstrap.Modal.getInstance(modal);
+                modalBS.hide();
           },
           error: function(jqXHR, textStatus, errorThrown) {
             console.log(textStatus, errorThrown);
           }
         });
-      }
-  })
   }
 
  async function pintarProductosPagados(cuenta) {
@@ -135,16 +161,29 @@ function mesas_Pagadas() {
   })
   }
   
-
   function formato_Fecha(fechaString) {
     const fecha = new Date(fechaString);
   
     const opcionesFormato = {
       weekday: "long",
-      year: "numeric",
+      //year: "numeric",
       month: "short",
       day: "numeric"
     };
   
     return fecha.toLocaleDateString('es-CO', opcionesFormato);
+  }
+
+  function pintarTurnos(data) {
+    let turnos = data
+    turnos.sort(function(a, b) {
+    return b.id_turno - a.id_turno;
+  });
+    turnos.forEach(turno => {
+      if (turno.fecha_fin !== null) {
+        totalventas = parseInt(turno.pagos_efectivo) + parseInt(turno.pago_transferencia)
+        var row = "<tr onclick='mesas_Pagadas("+turno.id_turno +")' ><td>" + turno.id_turno + "</td><td 'width:20% >" + turno.encargado + "</td><td style= 'width:15%; text-align:center'>" + formatoMoneda(totalventas) + "</td><td style= 'width:25%; text-align:center'>" + formato_Fecha(turno.fecha_inicio) + "</td><td style= 'width:20%; text-align:center'>" + formato_Fecha(turno.fecha_fin) + "</td></tr>";
+        document.getElementById("tablaTurnos").getElementsByTagName('tbody')[0].innerHTML += row;
+      }
+    })
   }

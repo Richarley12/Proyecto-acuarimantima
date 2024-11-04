@@ -59,6 +59,14 @@ document.addEventListener('DOMContentLoaded', function () {
     window.location.href = '../index.html'
   }
   // realizo la consulta para mirar si el turno está abierto o cerrado y según esto cambia el valor del boton y modal para apertura o cierre
+
+  Swal.fire({
+    title: 'Cargando',
+    timerProgressBar: true,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
   traer_turnos()
     .then(function (data) {
       let ultimo_turno
@@ -100,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
           });
       }
       pintarTurnos(data)
+      Swal.close()
     })
     .catch(function (error) {
       swal({
@@ -228,6 +237,7 @@ function ejecutar_turno() {
                        await actualizarEstado(cuenta.id_cuenta,2)
                       }});
                        await insertarCierreTurno(datos_Insertar)
+                       
                     });
                   }else {
                     insertarCierreTurno(datos_Insertar)
@@ -242,12 +252,18 @@ function ejecutar_turno() {
 }
 function pintarTurnos(data) {
   let turnos = data
-
+  turnos.sort(function(a, b) {
+  return b.id_turno - a.id_turno;
+});
+console.log(turnos)
   turnos.forEach(turno => {
     if (turno.fecha_fin !== null) {
       total = parseInt(turno.saldo_inicial) + parseInt(turno.pagos_efectivo) + parseInt(turno.pago_transferencia)
+      turno.egresos_efectivo=(turno.egresos_efectivo==null) ? 0: turno.egresos_efectivo
+      turno.egresos_transferencias= (turno.egresos_transferencias==null)? 0 : turno.egresos_transferencias
       totalventas = parseInt(turno.pagos_efectivo) + parseInt(turno.pago_transferencia)
-      var row = "<tr><td>" + turno.id_turno + "</td><td>" + turno.encargado + "</td><td style= 'width:10%; text-align:center'>" + formatoMoneda(totalventas) + "</td><td style= 'width:10%; text-align:center'>" + formatoMoneda(0) + "</td><td style= 'width:10%; text-align:center'>" + formatoMoneda(turno.saldo_inicial) + "</td><td style= 'width:20%; text-align:center'>" + turno.fecha_inicio + "</td><td style= 'width:20%; text-align:center'>" + turno.fecha_fin + "</td><td style= 'width:10%; text-align:center'>" + formatoMoneda(total) + "</td><td><button onclick='ver_turno(" + JSON.stringify(turno) + ")' type='button' class='icono'><i class='fa-solid fa-eye' data-bs-toggle='modal' data-bs-target='#staticBackdrop'></i></button></td></tr>";
+      totalEgresos= parseInt(turno.egresos_efectivo) + parseInt(turno.egresos_transferencias)
+      var row = "<tr><td>" + turno.id_turno + "</td><td>" + turno.encargado + "</td><td style= 'width:10%; text-align:center'>" + formatoMoneda(totalventas) + "</td><td style= 'width:10%; text-align:center'>" + formatoMoneda(totalEgresos) + "</td><td style= 'width:10%; text-align:center'>" + formatoMoneda(turno.saldo_inicial) + "</td><td style= 'width:20%; text-align:center'>" + turno.fecha_inicio + "</td><td style= 'width:20%; text-align:center'>" + turno.fecha_fin + "</td><td style= 'width:10%; text-align:center'>" + formatoMoneda(total) + "</td><td><button onclick='ver_turno(" + JSON.stringify(turno) + ")' type='button' class='icono'><i class='fa-solid fa-eye' data-bs-toggle='modal' data-bs-target='#staticBackdrop'></i></button></td></tr>";
       document.getElementById("tablaTurnos").getElementsByTagName('tbody')[0].innerHTML += row;
     }
   })
